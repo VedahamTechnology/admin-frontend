@@ -1,9 +1,101 @@
+import { loginUser } from "../services/authService"
+import { useState } from "react"
 import { FaEnvelope, FaLock } from "react-icons/fa"
-import { HiOutlineChartBar } from "react-icons/hi"
+import { HiOutlineChartBar, HiEye, HiEyeOff } from "react-icons/hi"
 import { FiUsers } from "react-icons/fi"
 import { BsShieldCheck } from "react-icons/bs"
+import InputField from "../components/InputField"
+import Button from "../components/Button"
 
 function Login(){
+
+const [email,setEmail]=useState("")
+const [password,setPassword]=useState("")
+const [showPassword,setShowPassword]=useState(false)
+
+const [loading,setLoading]=useState(false)
+
+const [error,setError]=useState("")
+
+const handleLogin=async(e)=>{
+
+e.preventDefault()
+
+setError("")
+
+if(!email.trim()){
+
+setError("Email is required")
+
+return
+
+}
+
+if(!password.trim()){
+
+setError("Password is required")
+
+return
+
+}
+
+setLoading(true)
+
+try{
+
+const data={
+
+email,
+password,
+role:"admin"
+
+}
+
+const res=await loginUser(data)
+
+console.log(res.data)
+
+localStorage.setItem(
+
+"token",
+
+res.data.accessToken
+
+)
+
+localStorage.setItem(
+
+"user",
+
+JSON.stringify(res.data.user)
+
+)
+
+window.location.href="/dashboard"
+
+}
+
+catch(err){
+
+setError(
+
+err.response?.data?.message
+
+||
+
+"Login Failed"
+
+)
+
+}
+
+finally{
+
+setLoading(false)
+
+}
+
+}
 
 return(
 
@@ -14,10 +106,12 @@ return(
 <div className="absolute top-16 left-16 grid grid-cols-4 gap-3 opacity-20">
 
 {[...Array(16)].map((_,i)=>(
+
 <div
 key={i}
 className="w-1 h-1 bg-white rounded-full"
 />
+
 ))}
 
 </div>
@@ -26,10 +120,12 @@ className="w-1 h-1 bg-white rounded-full"
 <div className="absolute bottom-16 left-16 grid grid-cols-4 gap-3 opacity-20">
 
 {[...Array(16)].map((_,i)=>(
+
 <div
 key={i}
 className="w-1 h-1 bg-white rounded-full"
 />
+
 ))}
 
 </div>
@@ -57,14 +153,12 @@ Platform
 
 </h1>
 
-
 <p className="mt-8 text-slate-200 text-lg max-w-md">
 
 Manage bookings, vendors and workers
 through one powerful dashboard.
 
 </p>
-
 
 <div className="space-y-8 mt-14">
 
@@ -166,53 +260,86 @@ Welcome Back!
 
 </h1>
 
-
 <p className="text-center text-slate-500 mt-3 mb-10">
 
 Sign in to access admin panel
 
 </p>
 
+<form onSubmit={handleLogin}>
 
+<InputField
 
-<div className="relative mb-6">
-
-<FaEnvelope
-className="absolute left-5 top-5 text-slate-400"
-/>
-
-<input
+icon={FaEnvelope}
 
 type="email"
 
 placeholder="Email"
 
-className="w-full border border-slate-200 rounded-2xl py-4 pl-14 pr-4 outline-none focus:ring-2 focus:ring-cyan-500"
+value={email}
+
+onChange={(e)=>setEmail(e.target.value)}
 
 />
 
-</div>
+<InputField
 
+icon={FaLock}
 
-
-<div className="relative mb-6">
-
-<FaLock
-className="absolute left-5 top-5 text-slate-400"
-/>
-
-<input
-
-type="password"
+type={showPassword?"text":"password"}
 
 placeholder="Password"
 
-className="w-full border border-slate-200 rounded-2xl py-4 pl-14 pr-4 outline-none focus:ring-2 focus:ring-cyan-500"
+value={password}
+
+onChange={(e)=>setPassword(e.target.value)}
+
+rightIcon={
+
+<button
+
+type="button"
+
+onClick={()=>setShowPassword(!showPassword)}
+
+className="absolute right-5 top-5 text-slate-400"
+
+>
+
+{
+
+showPassword
+
+?
+
+<HiEyeOff size={22}/>
+
+:
+
+<HiEye size={22}/>
+
+}
+
+</button>
+
+}
 
 />
 
-</div>
 
+{
+
+error&&(
+
+<p className="text-red-500 text-sm mb-5">
+
+{error}
+
+</p>
+
+)
+
+}
 
 
 <div className="flex justify-between mb-8">
@@ -225,8 +352,10 @@ Remember me
 
 </label>
 
-
-<button className="text-cyan-600">
+<button
+type="button"
+className="text-cyan-600"
+>
 
 Forgot Password?
 
@@ -236,15 +365,15 @@ Forgot Password?
 
 
 
-<button
+<Button
 
-className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white py-4 rounded-2xl font-semibold hover:opacity-90 duration-300"
+loading={loading}
 
->
+text="Sign In"
 
-Sign In
+/>
 
-</button>
+</form>
 
 </div>
 

@@ -1,49 +1,30 @@
-function AdminLayout({ children }) {
-  return (
+import Sidebar from "../components/Sidebar"
+import Navbar from "../components/Navbar"
 
-    <div className="flex min-h-screen bg-slate-100">
+function AdminLayout({children}){
 
-      <div className="w-64 bg-slate-900 text-white p-5">
+return(
 
-        <h1 className="text-2xl font-bold mb-8">
-          Vedaham
-        </h1>
+<div className="flex">
 
-        <ul className="space-y-3">
+<Sidebar/>
 
-          <li className="bg-cyan-600 p-3 rounded-lg">
-            Dashboard
-          </li>
+<div className="flex-1 bg-slate-100 min-h-screen">
 
-          <li className="hover:bg-slate-800 p-3 rounded-lg cursor-pointer">
-            Users
-          </li>
+<Navbar/>
 
-          <li className="hover:bg-slate-800 p-3 rounded-lg cursor-pointer">
-            Vendors
-          </li>
+<div className="p-8">
 
-          <li className="hover:bg-slate-800 p-3 rounded-lg cursor-pointer">
-            Workers
-          </li>
+{children}
 
-          <li className="hover:bg-slate-800 p-3 rounded-lg cursor-pointer">
-            Bookings
-          </li>
+</div>
 
-        </ul>
+</div>
 
-      </div>
+</div>
 
-      <div className="flex-1 p-8">
+)
 
-        {children}
-
-      </div>
-
-    </div>
-
-  )
 }
 
 export default AdminLayout
