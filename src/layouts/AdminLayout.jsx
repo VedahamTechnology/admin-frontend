@@ -5,19 +5,23 @@ function AdminLayout({children}){
 
 return(
 
-<div className="flex">
+<div className="flex h-screen bg-[#F5F7FB]">
 
 <Sidebar/>
 
-<div className="flex-1 bg-slate-100 min-h-screen">
+<div className="flex flex-1 flex-col overflow-hidden">
 
 <Navbar/>
 
-<div className="p-8">
+<main
+
+className="flex-1 overflow-y-auto px-6 py-6 lg:px-8"
+
+>
 
 {children}
 
-</div>
+</main>
 
 </div>
 
