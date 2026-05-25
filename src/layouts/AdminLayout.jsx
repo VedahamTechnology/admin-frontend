@@ -1,27 +1,23 @@
 import Sidebar from "../components/Sidebar"
 import Navbar from "../components/Navbar"
 
-function AdminLayout({children}){
+function AdminLayout({ children }) {
 
 return(
 
-<div className="flex h-screen bg-[#F5F7FB]">
+<div className="flex min-h-screen bg-slate-100">
 
 <Sidebar/>
 
-<div className="flex flex-1 flex-col overflow-hidden">
+<div className="flex-1 flex flex-col">
 
 <Navbar/>
 
-<main
-
-className="flex-1 overflow-y-auto px-6 py-6 lg:px-8"
-
->
+<div className="p-6">
 
 {children}
 
-</main>
+</div>
 
 </div>
 

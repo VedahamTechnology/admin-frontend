@@ -3,89 +3,91 @@ LayoutDashboard,
 CalendarCheck,
 Users,
 Briefcase,
-Layers3,
 Wallet,
 Bell,
-BarChart3,
 Settings,
 LogOut
 } from "lucide-react"
 
+import {
+Link,
+useLocation,
+useNavigate
+} from "react-router-dom"
+
 function Sidebar(){
+
+const location=useLocation()
+const navigate=useNavigate()
 
 const menu=[
 
 {
 name:"Dashboard",
-icon:<LayoutDashboard size={18}/>,
-active:true
+path:"/dashboard",
+icon:<LayoutDashboard size={18}/>
 },
 
 {
 name:"Bookings",
+path:"/bookings",
 icon:<CalendarCheck size={18}/>
 },
 
 {
 name:"Users",
+path:"/users",
 icon:<Users size={18}/>
 },
 
 {
 name:"Providers",
+path:"/providers",
 icon:<Briefcase size={18}/>
 },
 
 {
-name:"Services",
-icon:<Layers3 size={18}/>
-},
-
-{
 name:"Payments",
+path:"/payments",
 icon:<Wallet size={18}/>
 },
 
 {
 name:"Notifications",
+path:"/notifications",
 icon:<Bell size={18}/>
 },
 
 {
-name:"Reports",
-icon:<BarChart3 size={18}/>
-},
-
-{
 name:"Settings",
+path:"/settings",
 icon:<Settings size={18}/>
 }
 
 ]
 
+const logout=()=>{
+
+localStorage.removeItem("token")
+localStorage.removeItem("user")
+
+navigate("/")
+
+}
+
 return(
 
-<aside className="sticky top-0 flex h-screen w-[280px] flex-col overflow-y-auto border-r border-white/10 bg-[#031B52] text-white shadow-[0_20px_60px_rgba(3,27,82,0.18)]">
+<aside className="w-[260px] min-h-screen bg-[#031B52] text-white flex flex-col">
 
-<div className="border-b border-white/10 px-7 py-7">
+<div className="p-6 border-b border-white/10">
 
-<div className="flex items-center gap-3">
-
-<div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 text-sm font-bold tracking-[0.2em] text-[#05AFC7]">
-
-H
-
-</div>
-
-<div>
-
-<h1 className="text-2xl font-semibold tracking-[0.2em]">
+<h1 className="text-2xl font-bold">
 
 HOMSTER
 
 </h1>
 
-<p className="text-xs uppercase tracking-[0.25em] text-slate-300/80">
+<p className="text-sm text-slate-300">
 
 Admin Panel
 
@@ -93,39 +95,53 @@ Admin Panel
 
 </div>
 
-</div>
-
-</div>
-
-<div className="flex-1 px-4 py-6">
-
-<p className="px-3 text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
-
-Navigation
-
-</p>
+<div className="flex-1 p-4">
 
 {
 
-menu.map((item,index)=>(
+menu.map((item)=>(
 
-<button
+<Link
 
-key={index}
+key={item.path}
+to={item.path}
 
-className={`group mb-2 flex w-full items-center gap-3 rounded-2xl px-4 py-3.5 text-left text-sm font-medium transition-all duration-200 ${item.active ? "bg-white/10 text-white shadow-[0_10px_24px_rgba(0,0,0,0.14)] ring-1 ring-white/10" : "text-slate-300 hover:bg-white/5 hover:text-white"}`}
+className={`
+
+flex
+items-center
+gap-3
+
+px-4
+py-3
+
+mb-2
+
+rounded-xl
+
+transition-all
+
+${
+location.pathname===item.path
+
+?
+
+"bg-cyan-500 text-white"
+
+:
+
+"text-slate-300 hover:bg-white/10"
+}
+
+`}
 
 >
 
-<span className={`flex h-9 w-9 items-center justify-center rounded-xl transition-colors duration-200 ${item.active ? "bg-[#05AFC7]/15 text-[#05AFC7]" : "bg-white/5 text-slate-300 group-hover:bg-white/10 group-hover:text-white"}`}>
-
 {item.icon}
-
-</span>
 
 {item.name}
 
-</button>
+</Link>
 
 ))
 
@@ -133,21 +149,11 @@ className={`group mb-2 flex w-full items-center gap-3 rounded-2xl px-4 py-3.5 te
 
 </div>
 
-<div className="border-t border-white/10 p-5">
-
 <button
 
-onClick={()=>{
+onClick={logout}
 
-localStorage.removeItem("token")
-
-localStorage.removeItem("user")
-
-window.location.href="/"
-
-}}
-
-className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-red-300 transition-colors duration-200 hover:bg-red-500/10 hover:text-red-200"
+className="m-4 flex items-center gap-3 rounded-xl bg-red-500/10 px-4 py-3 text-red-300"
 
 >
 
@@ -156,9 +162,8 @@ className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm font-med
 Logout
 
 </button>
-</div>
 
- </aside>
+</aside>
 
 )
 
