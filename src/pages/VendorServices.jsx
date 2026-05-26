@@ -2,45 +2,44 @@ import AdminLayout from "../layouts/AdminLayout"
 
 import {
 
-Wallet,
-CheckCircle2,
-Clock3,
 Search,
-Download
+Layers3,
+IndianRupee,
+CheckCircle2
 
 } from "lucide-react"
 
-function Settlements(){
+function VendorServices(){
 
-const settlements=[
+const services=[
 
 {
 
-id:"SET001",
+id:"VS001",
 
 vendor:"Spark Electrical",
 
-amount:"₹18,400",
+service:"Electrical Repair",
 
-bookings:42,
+price:"₹599",
 
-date:"25 May 2026",
+category:"Electrical",
 
-status:"Paid"
+status:"Active"
 
 },
 
 {
 
-id:"SET002",
+id:"VS002",
 
 vendor:"Quick Plumbing",
 
-amount:"₹11,250",
+service:"Pipe Installation",
 
-bookings:29,
+price:"₹450",
 
-date:"24 May 2026",
+category:"Plumbing",
 
 status:"Pending"
 
@@ -48,17 +47,17 @@ status:"Pending"
 
 {
 
-id:"SET003",
+id:"VS003",
 
 vendor:"Cool Air Services",
 
-amount:"₹22,800",
+service:"AC Installation",
 
-bookings:53,
+price:"₹899",
 
-date:"23 May 2026",
+category:"AC Repair",
 
-status:"Processing"
+status:"Active"
 
 }
 
@@ -78,11 +77,11 @@ className="
 
 text-cyan-600
 
+font-semibold
+
 uppercase
 
 tracking-[4px]
-
-font-semibold
 
 text-sm
 
@@ -90,7 +89,7 @@ text-sm
 
 >
 
-Finance Operations
+Vendor Operations
 
 </p>
 
@@ -108,7 +107,7 @@ text-slate-900
 
 >
 
-Settlements
+Vendor Services
 
 </h1>
 
@@ -124,7 +123,7 @@ mt-2
 
 >
 
-Manage vendor payouts and settlement flow.
+Manage vendor listed services and pricing.
 
 </p>
 
@@ -137,7 +136,7 @@ className="
 
 grid
 
-md:grid-cols-4
+md:grid-cols-3
 
 gap-5
 
@@ -147,9 +146,21 @@ gap-5
 
 <Card
 
-title="Paid"
+title="Total Services"
 
-value="₹1.82L"
+value="186"
+
+icon={<Layers3 size={22}/>}
+
+color="bg-cyan-500"
+
+/>
+
+<Card
+
+title="Active"
+
+value="154"
 
 icon={<CheckCircle2 size={22}/>}
 
@@ -159,37 +170,13 @@ color="bg-green-500"
 
 <Card
 
-title="Pending"
+title="Avg Price"
 
-value="₹42K"
+value="₹620"
 
-icon={<Clock3 size={22}/>}
+icon={<IndianRupee size={22}/>}
 
 color="bg-orange-500"
-
-/>
-
-<Card
-
-title="Processing"
-
-value="₹21K"
-
-icon={<Wallet size={22}/>}
-
-color="bg-cyan-500"
-
-/>
-
-<Card
-
-title="This Month"
-
-value="₹3.2L"
-
-icon={<Wallet size={22}/>}
-
-color="bg-[#031B52]"
 
 />
 
@@ -220,13 +207,7 @@ className="
 
 flex
 
-flex-col
-
-md:flex-row
-
 justify-between
-
-gap-4
 
 mb-6
 
@@ -236,7 +217,11 @@ mb-6
 
 <div
 
-className="relative"
+className="
+
+relative
+
+"
 
 >
 
@@ -260,7 +245,7 @@ text-slate-400
 
 <input
 
-placeholder="Search settlements"
+placeholder="Search vendor service"
 
 className="
 
@@ -289,50 +274,52 @@ w-[320px]
 </div>
 
 
-<button
+<select
 
 className="
 
-flex
-
-items-center
-
-gap-2
-
-bg-[#031B52]
-
-text-white
-
-px-5
-
-py-3
+border
 
 rounded-2xl
+
+px-4
 
 "
 
 >
 
-<Download size={18}/>
+<option>
 
-Export
+All Categories
 
-</button>
+</option>
+
+<option>
+
+Electrical
+
+</option>
+
+<option>
+
+Plumbing
+
+</option>
+
+<option>
+
+AC Repair
+
+</option>
+
+</select>
 
 </div>
 
 
-<div
+<div className="overflow-x-auto">
 
-className="overflow-x-auto"
-
->
-
-<table
-
-className="w-full"
-
->
+<table className="w-full">
 
 <thead>
 
@@ -358,19 +345,19 @@ Vendor
 
 <th>
 
-Bookings
+Service
 
 </th>
 
 <th>
 
-Amount
+Category
 
 </th>
 
 <th>
 
-Date
+Price
 
 </th>
 
@@ -395,11 +382,11 @@ Action
 
 {
 
-settlements.map((item)=>(
+services.map((service)=>(
 
 <tr
 
-key={item.id}
+key={service.id}
 
 className="
 
@@ -411,59 +398,27 @@ hover:bg-slate-50
 
 >
 
-<td
+<td className="py-5">
 
-className="py-5"
-
->
-
-<div>
-
-<p
-
-className="font-semibold"
-
->
-
-{item.vendor}
-
-</p>
-
-<p
-
-className="
-
-text-sm
-
-text-slate-500
-
-"
-
->
-
-{item.id}
-
-</p>
-
-</div>
+{service.vendor}
 
 </td>
 
 <td>
 
-{item.bookings}
+{service.service}
 
 </td>
 
 <td>
 
-{item.amount}
+{service.category}
 
 </td>
 
 <td>
 
-{item.date}
+{service.price}
 
 </td>
 
@@ -471,7 +426,7 @@ text-slate-500
 
 <Status
 
-value={item.status}
+value={service.status}
 
 />
 
@@ -483,15 +438,15 @@ value={item.status}
 
 className="
 
-bg-slate-100
-
 px-4
 
 py-2
 
 rounded-xl
 
-hover:bg-slate-200
+bg-[#031B52]
+
+text-white
 
 "
 
@@ -525,15 +480,11 @@ View
 
 }
 
-function Status({
-
-value
-
-}){
+function Status({value}){
 
 const color=
 
-value==="Paid"
+value==="Active"
 
 ?
 
@@ -541,15 +492,7 @@ value==="Paid"
 
 :
 
-value==="Pending"
-
-?
-
 "bg-orange-100 text-orange-700"
-
-:
-
-"bg-cyan-100 text-cyan-700"
 
 return(
 
@@ -672,4 +615,4 @@ rounded-2xl
 
 }
 
-export default Settlements
+export default VendorServices

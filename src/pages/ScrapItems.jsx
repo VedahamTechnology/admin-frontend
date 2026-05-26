@@ -2,63 +2,62 @@ import AdminLayout from "../layouts/AdminLayout"
 
 import {
 
-Wallet,
-CheckCircle2,
-Clock3,
+Package,
+Boxes,
 Search,
-Download
+TriangleAlert
 
 } from "lucide-react"
 
-function Settlements(){
+function ScrapItems(){
 
-const settlements=[
+const items=[
 
 {
 
-id:"SET001",
+id:"SC001",
 
-vendor:"Spark Electrical",
+name:"Copper Wire",
 
-amount:"₹18,400",
+category:"Metal",
 
-bookings:42,
+stock:"124 Kg",
 
-date:"25 May 2026",
+price:"₹420/Kg",
 
-status:"Paid"
+status:"Available"
 
 },
 
 {
 
-id:"SET002",
+id:"SC002",
 
-vendor:"Quick Plumbing",
+name:"Plastic Waste",
 
-amount:"₹11,250",
+category:"Plastic",
 
-bookings:29,
+stock:"45 Kg",
 
-date:"24 May 2026",
+price:"₹38/Kg",
 
-status:"Pending"
+status:"Low Stock"
 
 },
 
 {
 
-id:"SET003",
+id:"SC003",
 
-vendor:"Cool Air Services",
+name:"Steel Scrap",
 
-amount:"₹22,800",
+category:"Metal",
 
-bookings:53,
+stock:"210 Kg",
 
-date:"23 May 2026",
+price:"₹58/Kg",
 
-status:"Processing"
+status:"Available"
 
 }
 
@@ -90,7 +89,7 @@ text-sm
 
 >
 
-Finance Operations
+Inventory
 
 </p>
 
@@ -108,7 +107,7 @@ text-slate-900
 
 >
 
-Settlements
+Scrap Items
 
 </h1>
 
@@ -124,7 +123,7 @@ mt-2
 
 >
 
-Manage vendor payouts and settlement flow.
+Manage scrap inventory and pricing.
 
 </p>
 
@@ -137,7 +136,7 @@ className="
 
 grid
 
-md:grid-cols-4
+md:grid-cols-3
 
 gap-5
 
@@ -147,35 +146,11 @@ gap-5
 
 <Card
 
-title="Paid"
+title="Items"
 
-value="₹1.82L"
+value="84"
 
-icon={<CheckCircle2 size={22}/>}
-
-color="bg-green-500"
-
-/>
-
-<Card
-
-title="Pending"
-
-value="₹42K"
-
-icon={<Clock3 size={22}/>}
-
-color="bg-orange-500"
-
-/>
-
-<Card
-
-title="Processing"
-
-value="₹21K"
-
-icon={<Wallet size={22}/>}
+icon={<Package size={22}/>}
 
 color="bg-cyan-500"
 
@@ -183,13 +158,25 @@ color="bg-cyan-500"
 
 <Card
 
-title="This Month"
+title="In Stock"
 
-value="₹3.2L"
+value="71"
 
-icon={<Wallet size={22}/>}
+icon={<Boxes size={22}/>}
 
-color="bg-[#031B52]"
+color="bg-green-500"
+
+/>
+
+<Card
+
+title="Low Stock"
+
+value="13"
+
+icon={<TriangleAlert size={22}/>}
+
+color="bg-orange-500"
 
 />
 
@@ -220,13 +207,7 @@ className="
 
 flex
 
-flex-col
-
-md:flex-row
-
 justify-between
-
-gap-4
 
 mb-6
 
@@ -260,7 +241,7 @@ text-slate-400
 
 <input
 
-placeholder="Search settlements"
+placeholder="Search scrap item"
 
 className="
 
@@ -289,50 +270,46 @@ w-[320px]
 </div>
 
 
-<button
+<select
 
 className="
 
-flex
-
-items-center
-
-gap-2
-
-bg-[#031B52]
-
-text-white
-
-px-5
-
-py-3
+border
 
 rounded-2xl
+
+px-4
 
 "
 
 >
 
-<Download size={18}/>
+<option>
 
-Export
+All Categories
 
-</button>
+</option>
+
+<option>
+
+Metal
+
+</option>
+
+<option>
+
+Plastic
+
+</option>
+
+</select>
 
 </div>
 
 
-<div
+<div className="overflow-x-auto">
 
-className="overflow-x-auto"
-
->
-
-<table
-
-className="w-full"
-
->
+<table className="w-full">
 
 <thead>
 
@@ -352,25 +329,25 @@ text-slate-500
 
 <th className="pb-4">
 
-Vendor
+Item
 
 </th>
 
 <th>
 
-Bookings
+Category
 
 </th>
 
 <th>
 
-Amount
+Stock
 
 </th>
 
 <th>
 
-Date
+Price
 
 </th>
 
@@ -390,12 +367,11 @@ Action
 
 </thead>
 
-
 <tbody>
 
 {
 
-settlements.map((item)=>(
+items.map((item)=>(
 
 <tr
 
@@ -411,11 +387,7 @@ hover:bg-slate-50
 
 >
 
-<td
-
-className="py-5"
-
->
+<td className="py-5">
 
 <div>
 
@@ -425,7 +397,7 @@ className="font-semibold"
 
 >
 
-{item.vendor}
+{item.name}
 
 </p>
 
@@ -451,19 +423,19 @@ text-slate-500
 
 <td>
 
-{item.bookings}
+{item.category}
 
 </td>
 
 <td>
 
-{item.amount}
+{item.stock}
 
 </td>
 
 <td>
 
-{item.date}
+{item.price}
 
 </td>
 
@@ -483,15 +455,15 @@ value={item.status}
 
 className="
 
-bg-slate-100
+bg-[#031B52]
+
+text-white
 
 px-4
 
 py-2
 
 rounded-xl
-
-hover:bg-slate-200
 
 "
 
@@ -533,7 +505,7 @@ value
 
 const color=
 
-value==="Paid"
+value==="Available"
 
 ?
 
@@ -541,15 +513,7 @@ value==="Paid"
 
 :
 
-value==="Pending"
-
-?
-
 "bg-orange-100 text-orange-700"
-
-:
-
-"bg-cyan-100 text-cyan-700"
 
 return(
 
@@ -672,4 +636,4 @@ rounded-2xl
 
 }
 
-export default Settlements
+export default ScrapItems

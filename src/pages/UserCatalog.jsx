@@ -2,63 +2,68 @@ import AdminLayout from "../layouts/AdminLayout"
 
 import {
 
-Wallet,
-CheckCircle2,
-Clock3,
 Search,
-Download
+Users,
+UserPlus,
+ShieldCheck
 
 } from "lucide-react"
 
-function Settlements(){
+function UserCatalog(){
 
-const settlements=[
+const users=[
 
 {
 
-id:"SET001",
+id:"USR001",
 
-vendor:"Spark Electrical",
+name:"Priya Sharma",
 
-amount:"₹18,400",
+email:"priya@gmail.com",
 
-bookings:42,
+phone:"9876543210",
 
-date:"25 May 2026",
+city:"Delhi",
 
-status:"Paid"
+bookings:14,
+
+status:"Active"
 
 },
 
 {
 
-id:"SET002",
+id:"USR002",
 
-vendor:"Quick Plumbing",
+name:"Aman Verma",
 
-amount:"₹11,250",
+email:"aman@gmail.com",
 
-bookings:29,
+phone:"9812345678",
 
-date:"24 May 2026",
+city:"Noida",
 
-status:"Pending"
+bookings:7,
+
+status:"Blocked"
 
 },
 
 {
 
-id:"SET003",
+id:"USR003",
 
-vendor:"Cool Air Services",
+name:"Riya Singh",
 
-amount:"₹22,800",
+email:"riya@gmail.com",
 
-bookings:53,
+phone:"9988776655",
 
-date:"23 May 2026",
+city:"Gurgaon",
 
-status:"Processing"
+bookings:19,
+
+status:"Active"
 
 }
 
@@ -90,7 +95,7 @@ text-sm
 
 >
 
-Finance Operations
+Customer Management
 
 </p>
 
@@ -108,7 +113,7 @@ text-slate-900
 
 >
 
-Settlements
+User Catalog
 
 </h1>
 
@@ -124,7 +129,7 @@ mt-2
 
 >
 
-Manage vendor payouts and settlement flow.
+View and manage customer accounts.
 
 </p>
 
@@ -137,7 +142,7 @@ className="
 
 grid
 
-md:grid-cols-4
+md:grid-cols-3
 
 gap-5
 
@@ -147,35 +152,11 @@ gap-5
 
 <Card
 
-title="Paid"
+title="Users"
 
-value="₹1.82L"
+value="1240"
 
-icon={<CheckCircle2 size={22}/>}
-
-color="bg-green-500"
-
-/>
-
-<Card
-
-title="Pending"
-
-value="₹42K"
-
-icon={<Clock3 size={22}/>}
-
-color="bg-orange-500"
-
-/>
-
-<Card
-
-title="Processing"
-
-value="₹21K"
-
-icon={<Wallet size={22}/>}
+icon={<Users size={22}/>}
 
 color="bg-cyan-500"
 
@@ -183,13 +164,25 @@ color="bg-cyan-500"
 
 <Card
 
-title="This Month"
+title="New This Month"
 
-value="₹3.2L"
+value="82"
 
-icon={<Wallet size={22}/>}
+icon={<UserPlus size={22}/>}
 
-color="bg-[#031B52]"
+color="bg-green-500"
+
+/>
+
+<Card
+
+title="Verified"
+
+value="1189"
+
+icon={<ShieldCheck size={22}/>}
+
+color="bg-orange-500"
 
 />
 
@@ -220,13 +213,7 @@ className="
 
 flex
 
-flex-col
-
-md:flex-row
-
 justify-between
-
-gap-4
 
 mb-6
 
@@ -260,7 +247,7 @@ text-slate-400
 
 <input
 
-placeholder="Search settlements"
+placeholder="Search users"
 
 className="
 
@@ -289,50 +276,46 @@ w-[320px]
 </div>
 
 
-<button
+<select
 
 className="
 
-flex
-
-items-center
-
-gap-2
-
-bg-[#031B52]
-
-text-white
-
-px-5
-
-py-3
+border
 
 rounded-2xl
+
+px-4
 
 "
 
 >
 
-<Download size={18}/>
+<option>
 
-Export
+All Users
 
-</button>
+</option>
+
+<option>
+
+Active
+
+</option>
+
+<option>
+
+Blocked
+
+</option>
+
+</select>
 
 </div>
 
 
-<div
+<div className="overflow-x-auto">
 
-className="overflow-x-auto"
-
->
-
-<table
-
-className="w-full"
-
->
+<table className="w-full">
 
 <thead>
 
@@ -352,7 +335,25 @@ text-slate-500
 
 <th className="pb-4">
 
-Vendor
+User
+
+</th>
+
+<th>
+
+Email
+
+</th>
+
+<th>
+
+Phone
+
+</th>
+
+<th>
+
+City
 
 </th>
 
@@ -364,25 +365,7 @@ Bookings
 
 <th>
 
-Amount
-
-</th>
-
-<th>
-
-Date
-
-</th>
-
-<th>
-
 Status
-
-</th>
-
-<th>
-
-Action
 
 </th>
 
@@ -390,16 +373,15 @@ Action
 
 </thead>
 
-
 <tbody>
 
 {
 
-settlements.map((item)=>(
+users.map((user)=>(
 
 <tr
 
-key={item.id}
+key={user.id}
 
 className="
 
@@ -411,11 +393,7 @@ hover:bg-slate-50
 
 >
 
-<td
-
-className="py-5"
-
->
+<td className="py-5">
 
 <div>
 
@@ -425,7 +403,7 @@ className="font-semibold"
 
 >
 
-{item.vendor}
+{user.name}
 
 </p>
 
@@ -441,7 +419,7 @@ text-slate-500
 
 >
 
-{item.id}
+{user.id}
 
 </p>
 
@@ -451,19 +429,25 @@ text-slate-500
 
 <td>
 
-{item.bookings}
+{user.email}
 
 </td>
 
 <td>
 
-{item.amount}
+{user.phone}
 
 </td>
 
 <td>
 
-{item.date}
+{user.city}
+
+</td>
+
+<td>
+
+{user.bookings}
 
 </td>
 
@@ -471,35 +455,9 @@ text-slate-500
 
 <Status
 
-value={item.status}
+value={user.status}
 
 />
-
-</td>
-
-<td>
-
-<button
-
-className="
-
-bg-slate-100
-
-px-4
-
-py-2
-
-rounded-xl
-
-hover:bg-slate-200
-
-"
-
->
-
-View
-
-</button>
 
 </td>
 
@@ -525,15 +483,11 @@ View
 
 }
 
-function Status({
-
-value
-
-}){
+function Status({value}){
 
 const color=
 
-value==="Paid"
+value==="Active"
 
 ?
 
@@ -541,15 +495,7 @@ value==="Paid"
 
 :
 
-value==="Pending"
-
-?
-
-"bg-orange-100 text-orange-700"
-
-:
-
-"bg-cyan-100 text-cyan-700"
+"bg-red-100 text-red-700"
 
 return(
 
@@ -672,4 +618,4 @@ rounded-2xl
 
 }
 
-export default Settlements
+export default UserCatalog

@@ -3,68 +3,67 @@ import AdminLayout from "../layouts/AdminLayout"
 import {
 
 Search,
-CalendarCheck,
-Clock3,
-CircleCheck,
-XCircle
+Star,
+MessageSquare,
+BadgeCheck
 
 } from "lucide-react"
 
-function Bookings(){
+function Reviews(){
 
-const bookings=[
+const reviews=[
 
 {
 
-id:"BK001",
+id:"RV001",
 
-customer:"Priya Sharma",
+user:"Priya Sharma",
 
 worker:"Rohit Kumar",
 
 service:"Electrical Repair",
 
-date:"25 May 2026",
+rating:5,
 
-amount:"₹850",
+review:"Quick and professional work.",
 
-status:"Completed"
+status:"Published"
 
 },
 
 {
 
-id:"BK002",
+id:"RV002",
 
-customer:"Aman Verma",
+user:"Aman Verma",
 
 worker:"Deepak",
 
 service:"AC Service",
 
-date:"25 May 2026",
+rating:3,
 
-amount:"₹1200",
+review:"Service delayed.",
 
-status:"Pending"
+status:"Flagged"
 
 },
 
 {
 
-id:"BK003",
+id:"RV003",
 
-customer:"Riya Singh",
+user:"Riya Singh",
 
 worker:"Aman Singh",
 
 service:"Plumbing",
 
-date:"24 May 2026",
+rating:4,
 
-amount:"₹650",
+review:"Good experience overall.",
 
-status:"Cancelled"
+status:"Published"
 
 }
 
@@ -84,11 +83,11 @@ className="
 
 text-cyan-600
 
-font-semibold
-
 uppercase
 
 tracking-[4px]
+
+font-semibold
 
 text-sm
 
@@ -96,7 +95,7 @@ text-sm
 
 >
 
-Operations
+Customer Feedback
 
 </p>
 
@@ -114,7 +113,7 @@ text-slate-900
 
 >
 
-Bookings
+Reviews
 
 </h1>
 
@@ -130,7 +129,7 @@ mt-2
 
 >
 
-Track customer bookings and service flow.
+Manage ratings and customer reviews.
 
 </p>
 
@@ -143,7 +142,7 @@ className="
 
 grid
 
-md:grid-cols-4
+md:grid-cols-3
 
 gap-5
 
@@ -153,11 +152,11 @@ gap-5
 
 <Card
 
-title="Total"
+title="Total Reviews"
 
-value="328"
+value="1248"
 
-icon={<CalendarCheck size={22}/>}
+icon={<MessageSquare size={22}/>}
 
 color="bg-cyan-500"
 
@@ -165,11 +164,11 @@ color="bg-cyan-500"
 
 <Card
 
-title="Pending"
+title="Avg Rating"
 
-value="18"
+value="4.7"
 
-icon={<Clock3 size={22}/>}
+icon={<Star size={22}/>}
 
 color="bg-orange-500"
 
@@ -177,25 +176,13 @@ color="bg-orange-500"
 
 <Card
 
-title="Completed"
+title="Published"
 
-value="291"
+value="1190"
 
-icon={<CircleCheck size={22}/>}
+icon={<BadgeCheck size={22}/>}
 
 color="bg-green-500"
-
-/>
-
-<Card
-
-title="Cancelled"
-
-value="19"
-
-icon={<XCircle size={22}/>}
-
-color="bg-red-500"
 
 />
 
@@ -236,11 +223,7 @@ mb-6
 
 <div
 
-className="
-
-relative
-
-"
+className="relative"
 
 >
 
@@ -264,7 +247,7 @@ text-slate-400
 
 <input
 
-placeholder="Search booking"
+placeholder="Search review"
 
 className="
 
@@ -308,25 +291,19 @@ px-4
 
 <option>
 
-All Status
+All Reviews
 
 </option>
 
 <option>
 
-Pending
+Published
 
 </option>
 
 <option>
 
-Completed
-
-</option>
-
-<option>
-
-Cancelled
+Flagged
 
 </option>
 
@@ -335,19 +312,65 @@ Cancelled
 </div>
 
 
-<div className="overflow-x-auto">
+<div className="space-y-4">
 
-<table className="w-full">
+{
 
-<thead>
+reviews.map((review)=>(
 
-<tr
+<div
+
+key={review.id}
 
 className="
 
-border-b
+border
 
-text-left
+border-slate-200
+
+rounded-2xl
+
+p-5
+
+hover:shadow-md
+
+transition-all
+
+"
+
+>
+
+<div
+
+className="
+
+flex
+
+justify-between
+
+mb-3
+
+"
+
+>
+
+<div>
+
+<h3
+
+className="font-semibold"
+
+>
+
+{review.user}
+
+</h3>
+
+<p
+
+className="
+
+text-sm
 
 text-slate-500
 
@@ -355,127 +378,97 @@ text-slate-500
 
 >
 
-<th className="pb-4">
+{review.service}
 
-Booking ID
+</p>
 
-</th>
+</div>
 
-<th>
+<Status
 
-Customer
+value={review.status}
 
-</th>
+/>
 
-<th>
+</div>
 
-Worker
-
-</th>
-
-<th>
-
-Service
-
-</th>
-
-<th>
-
-Date
-
-</th>
-
-<th>
-
-Amount
-
-</th>
-
-<th>
-
-Status
-
-</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-{
-
-bookings.map((booking)=>(
-
-<tr
-
-key={booking.id}
+<div
 
 className="
 
-border-b
+flex
 
-hover:bg-slate-50
+items-center
+
+gap-1
+
+mb-3
 
 "
 
 >
 
-<td className="py-5">
+{
 
-{booking.id}
+[...Array(review.rating)]
 
-</td>
+.map((_,i)=>(
 
-<td>
+<Star
 
-{booking.customer}
+key={i}
 
-</td>
+size={16}
 
-<td>
+fill="#F59E0B"
 
-{booking.worker}
-
-</td>
-
-<td>
-
-{booking.service}
-
-</td>
-
-<td>
-
-{booking.date}
-
-</td>
-
-<td>
-
-{booking.amount}
-
-</td>
-
-<td>
-
-<Status
-
-value={booking.status}
+color="#F59E0B"
 
 />
-
-</td>
-
-</tr>
 
 ))
 
 }
 
-</tbody>
+</div>
 
-</table>
+<p
+
+className="
+
+text-slate-600
+
+"
+
+>
+
+"{review.review}"
+
+</p>
+
+<p
+
+className="
+
+text-sm
+
+text-slate-400
+
+mt-2
+
+"
+
+>
+
+Worker: {review.worker}
+
+</p>
+
+</div>
+
+))
+
+}
 
 </div>
 
@@ -489,7 +482,6 @@ value={booking.status}
 
 }
 
-
 function Status({
 
 value
@@ -498,19 +490,11 @@ value
 
 const color=
 
-value==="Completed"
+value==="Published"
 
 ?
 
 "bg-green-100 text-green-700"
-
-:
-
-value==="Pending"
-
-?
-
-"bg-orange-100 text-orange-700"
 
 :
 
@@ -543,7 +527,6 @@ ${color}
 )
 
 }
-
 
 function Card({
 
@@ -638,4 +621,4 @@ rounded-2xl
 
 }
 
-export default Bookings
+export default Reviews

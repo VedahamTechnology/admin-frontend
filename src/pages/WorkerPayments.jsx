@@ -3,28 +3,26 @@ import AdminLayout from "../layouts/AdminLayout"
 import {
 
 Wallet,
-CheckCircle2,
-Clock3,
 Search,
-Download
+CircleDollarSign
 
 } from "lucide-react"
 
-function Settlements(){
+function WorkerPayments(){
 
-const settlements=[
+const payments=[
 
 {
 
-id:"SET001",
+id:"PAY001",
 
-vendor:"Spark Electrical",
+worker:"Rohit Kumar",
 
 amount:"₹18,400",
 
-bookings:42,
+jobs:42,
 
-date:"25 May 2026",
+date:"24 May 2026",
 
 status:"Paid"
 
@@ -32,15 +30,15 @@ status:"Paid"
 
 {
 
-id:"SET002",
+id:"PAY002",
 
-vendor:"Quick Plumbing",
+worker:"Aman Singh",
 
 amount:"₹11,250",
 
-bookings:29,
+jobs:29,
 
-date:"24 May 2026",
+date:"23 May 2026",
 
 status:"Pending"
 
@@ -48,15 +46,15 @@ status:"Pending"
 
 {
 
-id:"SET003",
+id:"PAY003",
 
-vendor:"Cool Air Services",
+worker:"Deepak",
 
-amount:"₹22,800",
+amount:"₹7,800",
 
-bookings:53,
+jobs:17,
 
-date:"23 May 2026",
+date:"22 May 2026",
 
 status:"Processing"
 
@@ -78,11 +76,11 @@ className="
 
 text-cyan-600
 
+font-semibold
+
 uppercase
 
 tracking-[4px]
-
-font-semibold
 
 text-sm
 
@@ -90,7 +88,7 @@ text-sm
 
 >
 
-Finance Operations
+Finance
 
 </p>
 
@@ -108,7 +106,7 @@ text-slate-900
 
 >
 
-Settlements
+Worker Payments
 
 </h1>
 
@@ -124,7 +122,7 @@ mt-2
 
 >
 
-Manage vendor payouts and settlement flow.
+Track worker earnings and payouts.
 
 </p>
 
@@ -137,7 +135,7 @@ className="
 
 grid
 
-md:grid-cols-4
+md:grid-cols-3
 
 gap-5
 
@@ -149,9 +147,9 @@ gap-5
 
 title="Paid"
 
-value="₹1.82L"
+value="₹82K"
 
-icon={<CheckCircle2 size={22}/>}
+icon={<Wallet size={22}/>}
 
 color="bg-green-500"
 
@@ -161,9 +159,9 @@ color="bg-green-500"
 
 title="Pending"
 
-value="₹42K"
+value="₹24K"
 
-icon={<Clock3 size={22}/>}
+icon={<CircleDollarSign size={22}/>}
 
 color="bg-orange-500"
 
@@ -173,23 +171,11 @@ color="bg-orange-500"
 
 title="Processing"
 
-value="₹21K"
+value="₹13K"
 
 icon={<Wallet size={22}/>}
 
 color="bg-cyan-500"
-
-/>
-
-<Card
-
-title="This Month"
-
-value="₹3.2L"
-
-icon={<Wallet size={22}/>}
-
-color="bg-[#031B52]"
 
 />
 
@@ -218,25 +204,11 @@ p-6
 
 className="
 
-flex
-
-flex-col
-
-md:flex-row
-
-justify-between
-
-gap-4
+relative
 
 mb-6
 
 "
-
->
-
-<div
-
-className="relative"
 
 >
 
@@ -260,7 +232,7 @@ text-slate-400
 
 <input
 
-placeholder="Search settlements"
+placeholder="Search payment"
 
 className="
 
@@ -289,50 +261,7 @@ w-[320px]
 </div>
 
 
-<button
-
-className="
-
-flex
-
-items-center
-
-gap-2
-
-bg-[#031B52]
-
-text-white
-
-px-5
-
-py-3
-
-rounded-2xl
-
-"
-
->
-
-<Download size={18}/>
-
-Export
-
-</button>
-
-</div>
-
-
-<div
-
-className="overflow-x-auto"
-
->
-
-<table
-
-className="w-full"
-
->
+<table className="w-full">
 
 <thead>
 
@@ -352,13 +281,13 @@ text-slate-500
 
 <th className="pb-4">
 
-Vendor
+Worker
 
 </th>
 
 <th>
 
-Bookings
+Jobs
 
 </th>
 
@@ -395,11 +324,11 @@ Action
 
 {
 
-settlements.map((item)=>(
+payments.map((payment)=>(
 
 <tr
 
-key={item.id}
+key={payment.id}
 
 className="
 
@@ -411,11 +340,7 @@ hover:bg-slate-50
 
 >
 
-<td
-
-className="py-5"
-
->
+<td className="py-5">
 
 <div>
 
@@ -425,7 +350,7 @@ className="font-semibold"
 
 >
 
-{item.vendor}
+{payment.worker}
 
 </p>
 
@@ -441,7 +366,7 @@ text-slate-500
 
 >
 
-{item.id}
+{payment.id}
 
 </p>
 
@@ -451,19 +376,19 @@ text-slate-500
 
 <td>
 
-{item.bookings}
+{payment.jobs}
 
 </td>
 
 <td>
 
-{item.amount}
+{payment.amount}
 
 </td>
 
 <td>
 
-{item.date}
+{payment.date}
 
 </td>
 
@@ -471,7 +396,7 @@ text-slate-500
 
 <Status
 
-value={item.status}
+value={payment.status}
 
 />
 
@@ -483,15 +408,17 @@ value={item.status}
 
 className="
 
-bg-slate-100
-
 px-4
 
 py-2
 
 rounded-xl
 
-hover:bg-slate-200
+bg-[#031B52]
+
+text-white
+
+hover:opacity-90
 
 "
 
@@ -517,13 +444,12 @@ View
 
 </div>
 
-</div>
-
 </AdminLayout>
 
 )
 
 }
+
 
 function Status({
 
@@ -579,6 +505,7 @@ ${color}
 
 }
 
+
 function Card({
 
 title,
@@ -620,7 +547,11 @@ transition-all
 
 <div>
 
-<p className="text-slate-500">
+<p
+
+className="text-slate-500"
+
+>
 
 {title}
 
@@ -672,4 +603,4 @@ rounded-2xl
 
 }
 
-export default Settlements
+export default WorkerPayments

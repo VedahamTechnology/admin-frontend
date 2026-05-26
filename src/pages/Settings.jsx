@@ -1,40 +1,151 @@
 import AdminLayout from "../layouts/AdminLayout"
 
+import {
+
+User,
+Shield,
+Bell,
+Globe,
+Save
+
+} from "lucide-react"
+
 function Settings(){
 
 return(
 
 <AdminLayout>
 
-<div className="mb-8">
+<div className="space-y-6">
 
-<h1 className="text-3xl font-bold">
+<div>
+
+<p
+
+className="
+
+text-cyan-600
+
+uppercase
+
+tracking-[4px]
+
+font-semibold
+
+text-sm
+
+"
+
+>
+
+System Configuration
+
+</p>
+
+<h1
+
+className="
+
+text-5xl
+
+font-bold
+
+text-slate-900
+
+"
+
+>
 
 Settings
 
 </h1>
 
-<p className="text-slate-500 mt-2">
+<p
 
-Manage admin preferences and platform settings
+className="
+
+text-slate-500
+
+mt-2
+
+"
+
+>
+
+Manage admin preferences and platform configuration.
 
 </p>
 
 </div>
 
-<div className="grid lg:grid-cols-2 gap-6">
 
 <div
 
-className="bg-white rounded-3xl border border-slate-200 p-6"
+className="
+
+grid
+
+lg:grid-cols-2
+
+gap-6
+
+"
 
 >
 
-<h2 className="font-semibold text-lg mb-5">
+<div
+
+className="
+
+bg-white
+
+border
+
+border-slate-200
+
+rounded-[28px]
+
+p-6
+
+"
+
+>
+
+<div
+
+className="
+
+flex
+
+items-center
+
+gap-3
+
+mb-6
+
+"
+
+>
+
+<User/>
+
+<h2
+
+className="
+
+text-xl
+
+font-bold
+
+"
+
+>
 
 Profile Settings
 
 </h2>
+
+</div>
 
 <div className="space-y-4">
 
@@ -42,7 +153,27 @@ Profile Settings
 
 placeholder="Admin Name"
 
-className="w-full border border-slate-200 rounded-2xl px-4 py-3 outline-none focus:ring-2 focus:ring-cyan-500"
+defaultValue="Admin"
+
+className="
+
+w-full
+
+border
+
+rounded-2xl
+
+px-4
+
+py-3
+
+outline-none
+
+focus:ring-2
+
+focus:ring-cyan-500
+
+"
 
 />
 
@@ -50,19 +181,57 @@ className="w-full border border-slate-200 rounded-2xl px-4 py-3 outline-none foc
 
 placeholder="Email"
 
-className="w-full border border-slate-200 rounded-2xl px-4 py-3 outline-none focus:ring-2 focus:ring-cyan-500"
+defaultValue="admin@homster.com"
+
+className="
+
+w-full
+
+border
+
+rounded-2xl
+
+px-4
+
+py-3
+
+outline-none
+
+focus:ring-2
+
+focus:ring-cyan-500
+
+"
 
 />
 
-<button
+<input
 
-className="bg-[#031B52] text-white px-5 py-3 rounded-2xl"
+placeholder="Phone"
 
->
+defaultValue="+91 9876543210"
 
-Save Changes
+className="
 
-</button>
+w-full
+
+border
+
+rounded-2xl
+
+px-4
+
+py-3
+
+outline-none
+
+focus:ring-2
+
+focus:ring-cyan-500
+
+"
+
+/>
 
 </div>
 
@@ -71,45 +240,406 @@ Save Changes
 
 <div
 
-className="bg-white rounded-3xl border border-slate-200 p-6"
+className="
+
+bg-white
+
+border
+
+border-slate-200
+
+rounded-[28px]
+
+p-6
+
+"
 
 >
 
-<h2 className="font-semibold text-lg mb-5">
+<div
+
+className="
+
+flex
+
+items-center
+
+gap-3
+
+mb-6
+
+"
+
+>
+
+<Shield/>
+
+<h2
+
+className="
+
+text-xl
+
+font-bold
+
+"
+
+>
 
 Security
 
 </h2>
 
+</div>
+
 <div className="space-y-4">
 
-<button
+<Toggle
 
-className="w-full border border-slate-200 rounded-2xl py-3"
+title="Two Factor Authentication"
 
->
+/>
 
-Change Password
+<Toggle
 
-</button>
+title="Login Alerts"
 
-<button
+/>
 
-className="w-full border border-red-200 text-red-500 rounded-2xl py-3"
+<Toggle
 
->
+title="Session Protection"
 
-Logout All Sessions
-
-</button>
+/>
 
 </div>
 
 </div>
+
+
+<div
+
+className="
+
+bg-white
+
+border
+
+border-slate-200
+
+rounded-[28px]
+
+p-6
+
+"
+
+>
+
+<div
+
+className="
+
+flex
+
+items-center
+
+gap-3
+
+mb-6
+
+"
+
+>
+
+<Bell/>
+
+<h2
+
+className="
+
+text-xl
+
+font-bold
+
+"
+
+>
+
+Notifications
+
+</h2>
+
+</div>
+
+<div className="space-y-4">
+
+<Toggle
+
+title="Email Notifications"
+
+/>
+
+<Toggle
+
+title="Booking Alerts"
+
+/>
+
+<Toggle
+
+title="Settlement Updates"
+
+/>
+
+</div>
+
+</div>
+
+
+<div
+
+className="
+
+bg-white
+
+border
+
+border-slate-200
+
+rounded-[28px]
+
+p-6
+
+"
+
+>
+
+<div
+
+className="
+
+flex
+
+items-center
+
+gap-3
+
+mb-6
+
+"
+
+>
+
+<Globe/>
+
+<h2
+
+className="
+
+text-xl
+
+font-bold
+
+"
+
+>
+
+Platform
+
+</h2>
+
+</div>
+
+<div className="space-y-4">
+
+<select
+
+className="
+
+w-full
+
+border
+
+rounded-2xl
+
+px-4
+
+py-3
+
+outline-none
+
+"
+
+>
+
+<option>
+
+India
+
+</option>
+
+<option>
+
+UAE
+
+</option>
+
+</select>
+
+<select
+
+className="
+
+w-full
+
+border
+
+rounded-2xl
+
+px-4
+
+py-3
+
+outline-none
+
+"
+
+>
+
+<option>
+
+INR ₹
+
+</option>
+
+<option>
+
+USD $
+
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+</div>
+
+
+<button
+
+className="
+
+flex
+
+items-center
+
+gap-2
+
+bg-[#031B52]
+
+text-white
+
+px-6
+
+py-3
+
+rounded-2xl
+
+hover:opacity-90
+
+"
+
+>
+
+<Save size={18}/>
+
+Save Changes
+
+</button>
 
 </div>
 
 </AdminLayout>
+
+)
+
+}
+
+function Toggle({
+
+title
+
+}){
+
+return(
+
+<div
+
+className="
+
+flex
+
+justify-between
+
+items-center
+
+"
+
+>
+
+<p>
+
+{title}
+
+</p>
+
+<div
+
+className="
+
+w-12
+
+h-6
+
+bg-cyan-500
+
+rounded-full
+
+relative
+
+"
+
+>
+
+<div
+
+className="
+
+absolute
+
+right-1
+
+top-1
+
+w-4
+
+h-4
+
+bg-white
+
+rounded-full
+
+"
+
+>
+
+</div>
+
+</div>
+
+</div>
 
 )
 

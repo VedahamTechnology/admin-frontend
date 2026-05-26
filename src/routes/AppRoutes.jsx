@@ -22,6 +22,13 @@ import CompletedBookings from "../pages/CompletedBookings"
 import CancelledBookings from "../pages/CancelledBookings"
 import Transactions from "../pages/Transactions"
 import Settlements from "../pages/Settlements"
+import Workers from "../pages/Workers"
+import WorkerPayments from "../pages/WorkerPayments"
+import VendorServices from "../pages/VendorServices"
+import ScrapItems from "../pages/ScrapItems"
+import UserCatalog from "../pages/UserCatalog"
+import Reviews from "../pages/Reviews"
+import Plans from "../pages/Plans"
 
 function AppRoutes(){
 
@@ -41,10 +48,28 @@ element={<Login/>}
 
 <Route
 
+path="/vendor-services"
+
+element={<VendorServices/>}
+
+/>
+
+<Route
+
 path="/dashboard"
 
 element={<Dashboard/>}
 
+/>
+
+<Route
+path="/vendors"
+element={<Providers/>}
+/>
+
+<Route
+path="/vendors/services"
+element={<VendorServices/>}
 />
 
 <Route
@@ -60,6 +85,14 @@ element={<Users/>}
 path="/users/bookings"
 
 element={<UserBookings/>}
+
+/>
+
+<Route
+
+path="/scrap"
+
+element={<ScrapItems/>}
 
 />
 
@@ -89,9 +122,33 @@ element={<ProviderBookings/>}
 
 <Route
 
+path="/plans"
+
+element={<Plans/>}
+
+/>
+
+<Route
+
+path="/reviews"
+
+element={<Reviews/>}
+
+/>
+
+<Route
+
 path="/providers/analytics"
 
 element={<ProviderAnalytics/>}
+
+/>
+
+<Route
+
+path="/catalog"
+
+element={<UserCatalog/>}
 
 />
 
@@ -132,6 +189,19 @@ element={<Pricing/>}
 path="/bookings"
 
 element={<Bookings/>}
+
+/>
+
+<Route
+path="/workers"
+element={<Workers/>}
+/>
+
+<Route
+
+path="/workers/payments"
+
+element={<WorkerPayments/>}
 
 />
 
@@ -177,7 +247,7 @@ element={<Transactions/>}
 
 <Route
 
-path="/payments/settlements"
+path="/settlements"
 
 element={<Settlements/>}
 

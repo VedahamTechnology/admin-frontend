@@ -1,36 +1,64 @@
 import AdminLayout from "../layouts/AdminLayout"
 
+import {
+
+BarChart3,
+TrendingUp,
+Users,
+Wallet,
+Download
+
+} from "lucide-react"
+
 function Reports(){
 
 const reports=[
 
 {
 
-title:"Revenue Report",
+name:"Revenue Report",
 
-value:"₹1,24,500",
+date:"25 May 2026",
 
-change:"+12%"
+type:"Finance",
 
-},
-
-{
-
-title:"Bookings Report",
-
-value:"328",
-
-change:"+18"
+status:"Generated"
 
 },
 
 {
 
-title:"Customer Growth",
+name:"Booking Analytics",
 
-value:"1240",
+date:"24 May 2026",
 
-change:"+45"
+type:"Operations",
+
+status:"Generated"
+
+},
+
+{
+
+name:"Vendor Performance",
+
+date:"24 May 2026",
+
+type:"Vendor",
+
+status:"Pending"
+
+},
+
+{
+
+name:"User Activity",
+
+date:"23 May 2026",
+
+type:"Customer",
+
+status:"Generated"
 
 }
 
@@ -40,79 +68,513 @@ return(
 
 <AdminLayout>
 
-<div className="mb-8">
+<div className="space-y-6">
 
-<h1 className="text-3xl font-bold">
+<div>
+
+<p
+
+className="
+
+text-cyan-600
+
+uppercase
+
+tracking-[4px]
+
+font-semibold
+
+text-sm
+
+"
+
+>
+
+Analytics Center
+
+</p>
+
+<h1
+
+className="
+
+text-5xl
+
+font-bold
+
+text-slate-900
+
+"
+
+>
 
 Reports
 
 </h1>
 
-<p className="text-slate-500 mt-2">
+<p
 
-Business insights and analytics
+className="
 
-</p>
+text-slate-500
 
-</div>
+mt-2
 
-<div className="grid md:grid-cols-3 gap-6">
-
-{
-
-reports.map((item,index)=>(
-
-<div
-
-key={index}
-
-className="bg-white border border-slate-200 rounded-3xl p-6"
+"
 
 >
 
-<h3 className="text-slate-500">
-
-{item.title}
-
-</h3>
-
-<p className="text-3xl font-bold mt-3">
-
-{item.value}
-
-</p>
-
-<p className="text-emerald-600 mt-2">
-
-{item.change}
+Platform reports and business analytics.
 
 </p>
 
 </div>
+
+
+<div
+
+className="
+
+grid
+
+md:grid-cols-4
+
+gap-5
+
+"
+
+>
+
+<Card
+
+title="Revenue"
+
+value="₹1.24L"
+
+icon={<Wallet size={22}/>}
+
+color="bg-cyan-500"
+
+/>
+
+<Card
+
+title="Bookings"
+
+value="328"
+
+icon={<BarChart3 size={22}/>}
+
+color="bg-orange-500"
+
+/>
+
+<Card
+
+title="Growth"
+
+value="+12%"
+
+icon={<TrendingUp size={22}/>}
+
+color="bg-green-500"
+
+/>
+
+<Card
+
+title="Users"
+
+value="1240"
+
+icon={<Users size={22}/>}
+
+color="bg-[#031B52]"
+
+/>
+
+</div>
+
+
+<div
+
+className="
+
+bg-white
+
+rounded-[28px]
+
+border
+
+border-slate-200
+
+p-6
+
+"
+
+>
+
+<div
+
+className="
+
+flex
+
+justify-between
+
+items-center
+
+mb-6
+
+"
+
+>
+
+<h2
+
+className="
+
+text-2xl
+
+font-bold
+
+"
+
+>
+
+Generated Reports
+
+</h2>
+
+<button
+
+className="
+
+flex
+
+items-center
+
+gap-2
+
+bg-[#031B52]
+
+text-white
+
+px-5
+
+py-3
+
+rounded-2xl
+
+"
+
+>
+
+<Download size={18}/>
+
+Export All
+
+</button>
+
+</div>
+
+
+<div
+
+className="overflow-x-auto"
+
+>
+
+<table className="w-full">
+
+<thead>
+
+<tr
+
+className="
+
+border-b
+
+text-left
+
+text-slate-500
+
+"
+
+>
+
+<th className="pb-4">
+
+Report Name
+
+</th>
+
+<th>
+
+Date
+
+</th>
+
+<th>
+
+Type
+
+</th>
+
+<th>
+
+Status
+
+</th>
+
+<th>
+
+Action
+
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{
+
+reports.map((report)=>(
+
+<tr
+
+key={report.name}
+
+className="
+
+border-b
+
+hover:bg-slate-50
+
+"
+
+>
+
+<td
+
+className="py-5"
+
+>
+
+{report.name}
+
+</td>
+
+<td>
+
+{report.date}
+
+</td>
+
+<td>
+
+{report.type}
+
+</td>
+
+<td>
+
+<Status
+
+value={report.status}
+
+/>
+
+</td>
+
+<td>
+
+<button
+
+className="
+
+bg-slate-100
+
+px-4
+
+py-2
+
+rounded-xl
+
+hover:bg-slate-200
+
+"
+
+>
+
+View
+
+</button>
+
+</td>
+
+</tr>
 
 ))
 
 }
 
+</tbody>
+
+</table>
+
 </div>
-
-<div className="mt-8 bg-white border border-slate-200 rounded-3xl p-8 h-[350px]">
-
-<h2 className="font-semibold mb-5">
-
-Monthly Analytics
-
-</h2>
-
-<div className="h-full flex justify-center items-center text-slate-400">
-
-Charts integration later
 
 </div>
 
 </div>
 
 </AdminLayout>
+
+)
+
+}
+
+function Status({
+
+value
+
+}){
+
+const color=
+
+value==="Generated"
+
+?
+
+"bg-green-100 text-green-700"
+
+:
+
+"bg-orange-100 text-orange-700"
+
+return(
+
+<span
+
+className={`
+
+px-3
+
+py-1
+
+rounded-full
+
+text-sm
+
+${color}
+
+`}
+
+>
+
+{value}
+
+</span>
+
+)
+
+}
+
+function Card({
+
+title,
+value,
+icon,
+color
+
+}){
+
+return(
+
+<div
+
+className="
+
+bg-white
+
+rounded-[28px]
+
+border
+
+border-slate-200
+
+p-6
+
+flex
+
+justify-between
+
+items-center
+
+hover:shadow-xl
+
+transition-all
+
+"
+
+>
+
+<div>
+
+<p
+
+className="text-slate-500"
+
+>
+
+{title}
+
+</p>
+
+<h2
+
+className="
+
+text-4xl
+
+font-bold
+
+mt-2
+
+"
+
+>
+
+{value}
+
+</h2>
+
+</div>
+
+<div
+
+className={`
+
+${color}
+
+text-white
+
+p-4
+
+rounded-2xl
+
+`}
+
+>
+
+{icon}
+
+</div>
+
+</div>
 
 )
 
