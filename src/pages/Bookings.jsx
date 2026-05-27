@@ -1,641 +1,133 @@
 import AdminLayout from "../layouts/AdminLayout"
+import { Search, CalendarCheck, Clock3, CircleCheck, XCircle } from "lucide-react"
 
-import {
+function Bookings() {
+  const bookings = [
+    {
+      id: "BK001",
+      customer: "Priya Sharma",
+      worker: "Rohit Kumar",
+      service: "Electrical Repair",
+      date: "25 May 2026",
+      amount: "₹850",
+      status: "Completed",
+    },
+    {
+      id: "BK002",
+      customer: "Aman Verma",
+      worker: "Deepak",
+      service: "AC Service",
+      date: "25 May 2026",
+      amount: "₹1200",
+      status: "Pending",
+    },
+    {
+      id: "BK003",
+      customer: "Riya Singh",
+      worker: "Aman Singh",
+      service: "Plumbing",
+      date: "24 May 2026",
+      amount: "₹650",
+      status: "Cancelled",
+    },
+  ]
 
-Search,
-CalendarCheck,
-Clock3,
-CircleCheck,
-XCircle
+  return (
+    <AdminLayout>
+      <div className="page-shell">
+        {/* Header */}
+        <div>
+          <p className="page-header__eyebrow">Operations</p>
+          <h1 className="page-header__title page-header__title--xl">Bookings</h1>
+          <p className="page-header__desc">Track customer bookings and service flow.</p>
+        </div>
 
-} from "lucide-react"
+        {/* Metric Cards */}
+        <div className="metric-grid metric-grid--4">
+          <BookingCard title="Total"     value="328" icon={<CalendarCheck size={22} />} accent="accent-cyan"    />
+          <BookingCard title="Pending"   value="18"  icon={<Clock3 size={22} />}        accent="accent-orange"  />
+          <BookingCard title="Completed" value="291" icon={<CircleCheck size={22} />}   accent="accent-success" />
+          <BookingCard title="Cancelled" value="19"  icon={<XCircle size={22} />}       accent="accent-danger"  />
+        </div>
 
-function Bookings(){
+        {/* Table */}
+        <div className="section-card">
+          <div className="table-toolbar">
+            <div className="search-wrapper">
+              <Search size={18} className="search-wrapper__icon" />
+              <input
+                placeholder="Search booking"
+                className="admin-input"
+              />
+            </div>
 
-const bookings=[
+            <select className="admin-select">
+              <option>All Status</option>
+              <option>Pending</option>
+              <option>Completed</option>
+              <option>Cancelled</option>
+            </select>
+          </div>
 
-{
-
-id:"BK001",
-
-customer:"Priya Sharma",
-
-worker:"Rohit Kumar",
-
-service:"Electrical Repair",
-
-date:"25 May 2026",
-
-amount:"₹850",
-
-status:"Completed"
-
-},
-
-{
-
-id:"BK002",
-
-customer:"Aman Verma",
-
-worker:"Deepak",
-
-service:"AC Service",
-
-date:"25 May 2026",
-
-amount:"₹1200",
-
-status:"Pending"
-
-},
-
-{
-
-id:"BK003",
-
-customer:"Riya Singh",
-
-worker:"Aman Singh",
-
-service:"Plumbing",
-
-date:"24 May 2026",
-
-amount:"₹650",
-
-status:"Cancelled"
-
+          <div className="admin-table-wrapper">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Customer</th>
+                  <th>Worker</th>
+                  <th>Service</th>
+                  <th>Date</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {bookings.map((booking) => (
+                  <tr key={booking.id}>
+                    <td>{booking.id}</td>
+                    <td>{booking.customer}</td>
+                    <td>{booking.worker}</td>
+                    <td>{booking.service}</td>
+                    <td>{booking.date}</td>
+                    <td>{booking.amount}</td>
+                    <td><BookingStatus value={booking.status} /></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </AdminLayout>
+  )
 }
 
-]
-
-return(
-
-<AdminLayout>
-
-<div className="space-y-6">
-
-<div>
-
-<p
-
-className="
-
-text-cyan-600
-
-font-semibold
-
-uppercase
-
-tracking-[4px]
-
-text-sm
-
-"
-
->
-
-Operations
-
-</p>
-
-<h1
-
-className="
-
-text-5xl
-
-font-bold
-
-text-slate-900
-
-"
-
->
-
-Bookings
-
-</h1>
-
-<p
-
-className="
-
-text-slate-500
-
-mt-2
-
-"
-
->
-
-Track customer bookings and service flow.
-
-</p>
-
-</div>
-
-
-<div
-
-className="
-
-grid
-
-md:grid-cols-4
-
-gap-5
-
-"
-
->
-
-<Card
-
-title="Total"
-
-value="328"
-
-icon={<CalendarCheck size={22}/>}
-
-color="bg-cyan-500"
-
-/>
-
-<Card
-
-title="Pending"
-
-value="18"
-
-icon={<Clock3 size={22}/>}
-
-color="bg-orange-500"
-
-/>
-
-<Card
-
-title="Completed"
-
-value="291"
-
-icon={<CircleCheck size={22}/>}
-
-color="bg-green-500"
-
-/>
-
-<Card
-
-title="Cancelled"
-
-value="19"
-
-icon={<XCircle size={22}/>}
-
-color="bg-red-500"
-
-/>
-
-</div>
-
-
-<div
-
-className="
-
-bg-white
-
-rounded-[28px]
-
-border
-
-border-slate-200
-
-p-6
-
-"
-
->
-
-<div
-
-className="
-
-flex
-
-justify-between
-
-mb-6
-
-"
-
->
-
-<div
-
-className="
-
-relative
-
-"
-
->
-
-<Search
-
-size={18}
-
-className="
-
-absolute
-
-left-4
-
-top-3.5
-
-text-slate-400
-
-"
-
-/>
-
-<input
-
-placeholder="Search booking"
-
-className="
-
-pl-11
-
-pr-4
-
-py-3
-
-border
-
-rounded-2xl
-
-outline-none
-
-focus:ring-2
-
-focus:ring-cyan-500
-
-w-[320px]
-
-"
-
-/>
-
-</div>
-
-<select
-
-className="
-
-border
-
-rounded-2xl
-
-px-4
-
-"
-
->
-
-<option>
-
-All Status
-
-</option>
-
-<option>
-
-Pending
-
-</option>
-
-<option>
-
-Completed
-
-</option>
-
-<option>
-
-Cancelled
-
-</option>
-
-</select>
-
-</div>
-
-
-<div className="overflow-x-auto">
-
-<table className="w-full">
-
-<thead>
-
-<tr
-
-className="
-
-border-b
-
-text-left
-
-text-slate-500
-
-"
-
->
-
-<th className="pb-4">
-
-Booking ID
-
-</th>
-
-<th>
-
-Customer
-
-</th>
-
-<th>
-
-Worker
-
-</th>
-
-<th>
-
-Service
-
-</th>
-
-<th>
-
-Date
-
-</th>
-
-<th>
-
-Amount
-
-</th>
-
-<th>
-
-Status
-
-</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-{
-
-bookings.map((booking)=>(
-
-<tr
-
-key={booking.id}
-
-className="
-
-border-b
-
-hover:bg-slate-50
-
-"
-
->
-
-<td className="py-5">
-
-{booking.id}
-
-</td>
-
-<td>
-
-{booking.customer}
-
-</td>
-
-<td>
-
-{booking.worker}
-
-</td>
-
-<td>
-
-{booking.service}
-
-</td>
-
-<td>
-
-{booking.date}
-
-</td>
-
-<td>
-
-{booking.amount}
-
-</td>
-
-<td>
-
-<Status
-
-value={booking.status}
-
-/>
-
-</td>
-
-</tr>
-
-))
-
+/* Local status badge (maps to global badge classes) */
+function BookingStatus({ value }) {
+  const variantMap = {
+    Completed: "badge--success",
+    Pending:   "badge--warning",
+    Cancelled: "badge--danger",
+  }
+  return (
+    <span className={`badge ${variantMap[value] || "badge--neutral"}`}>
+      {value}
+    </span>
+  )
 }
 
-</tbody>
-
-</table>
-
-</div>
-
-</div>
-
-</div>
-
-</AdminLayout>
-
-)
-
-}
-
-
-function Status({
-
-value
-
-}){
-
-const color=
-
-value==="Completed"
-
-?
-
-"bg-green-100 text-green-700"
-
-:
-
-value==="Pending"
-
-?
-
-"bg-orange-100 text-orange-700"
-
-:
-
-"bg-red-100 text-red-700"
-
-return(
-
-<span
-
-className={`
-
-px-3
-
-py-1
-
-rounded-full
-
-text-sm
-
-${color}
-
-`}
-
->
-
-{value}
-
-</span>
-
-)
-
-}
-
-
-function Card({
-
-title,
-value,
-icon,
-color
-
-}){
-
-return(
-
-<div
-
-className="
-
-bg-white
-
-rounded-[28px]
-
-border
-
-border-slate-200
-
-p-6
-
-flex
-
-justify-between
-
-items-center
-
-hover:shadow-xl
-
-transition-all
-
-"
-
->
-
-<div>
-
-<p className="text-slate-500">
-
-{title}
-
-</p>
-
-<h2
-
-className="
-
-text-4xl
-
-font-bold
-
-mt-2
-
-"
-
->
-
-{value}
-
-</h2>
-
-</div>
-
-<div
-
-className={`
-
-${color}
-
-text-white
-
-p-4
-
-rounded-2xl
-
-`}
-
->
-
-{icon}
-
-</div>
-
-</div>
-
-)
-
+/* Local metric card (extends global metric-card) */
+function BookingCard({ title, value, icon, accent }) {
+  return (
+    <div className="metric-card">
+      <div>
+        <p className="metric-card__label">{title}</p>
+        <h2 className="metric-card__value">{value}</h2>
+      </div>
+      <div className={`metric-card__icon ${accent}`}>{icon}</div>
+    </div>
+  )
 }
 
 export default Bookings

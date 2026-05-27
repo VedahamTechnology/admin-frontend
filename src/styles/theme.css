@@ -1,0 +1,80 @@
+/* ============================================================
+   HOMSTER ADMIN — THEME VARIABLES
+   Edit this file only to rebrand the entire dashboard.
+   ============================================================ */
+
+:root {
+  /* ── Brand Colors ────────────────────────────────────────── */
+  --color-brand-navy:        #031B52;   /* primary dark navy   */
+  --color-brand-navy-hover:  #04225f;   /* navy hover shade    */
+  --color-brand-navy-deep:   #18325F;   /* active sidebar item */
+  --color-brand-cyan:        #05AFC7;   /* accent / highlight  */
+  --color-brand-cyan-ring:   #05AFC7;   /* focus ring color    */
+
+  /* ── Semantic / Status Colors ───────────────────────────── */
+  --color-success:           #10b981;   /* emerald-500         */
+  --color-success-bg:        #d1fae5;   /* emerald-100         */
+  --color-success-text:      #065f46;   /* emerald-700         */
+
+  --color-warning:           #f59e0b;   /* amber-500           */
+  --color-warning-bg:        #fef3c7;   /* amber-100           */
+  --color-warning-text:      #92400e;   /* amber-700           */
+
+  --color-danger:            #ef4444;   /* red-500             */
+  --color-danger-bg:         #fee2e2;   /* red-100             */
+  --color-danger-text:       #991b1b;   /* red-700             */
+
+  --color-neutral-bg:        #f1f5f9;   /* slate-100           */
+  --color-neutral-text:      #475569;   /* slate-600           */
+
+  /* ── Surface / Background ───────────────────────────────── */
+  --color-bg-app:            #f8fafc;   /* slate-50 app bg     */
+  --color-bg-card:           #ffffff;   /* white card surface  */
+  --color-bg-sidebar:        #031B52;   /* sidebar background  */
+  --color-bg-navbar:         #ffffff;   /* navbar background   */
+
+  /* ── Text ────────────────────────────────────────────────── */
+  --color-text-primary:      #0f172a;   /* slate-900           */
+  --color-text-secondary:    #64748b;   /* slate-500           */
+  --color-text-muted:        #94a3b8;   /* slate-400           */
+  --color-text-sidebar:      #cbd5e1;   /* slate-300 on dark   */
+  --color-text-label:        #05AFC7;   /* cyan accent label   */
+
+  /* ── Border ─────────────────────────────────────────────── */
+  --color-border:            #e2e8f0;   /* slate-200           */
+  --color-border-light:      #f1f5f9;   /* slate-100           */
+  --color-border-sidebar:    rgba(255,255,255,0.10);
+
+  /* ── Spacing ─────────────────────────────────────────────── */
+  --space-xs:   4px;
+  --space-sm:   8px;
+  --space-md:   16px;
+  --space-lg:   24px;
+  --space-xl:   32px;
+  --space-2xl:  48px;
+
+  /* ── Border Radius ───────────────────────────────────────── */
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --radius-xl:   20px;
+  --radius-2xl:  24px;
+  --radius-card: 28px;
+  --radius-full: 9999px;
+
+  /* ── Shadows ─────────────────────────────────────────────── */
+  --shadow-card:   0 12px 40px rgba(15, 23, 42, 0.06);
+  --shadow-navbar: 0 1px 0 var(--color-border);
+  --shadow-sm:     0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-xl:     0 20px 60px rgba(15, 23, 42, 0.12);
+  --shadow-sidebar:0 0 40px rgba(3, 27, 82, 0.40);
+
+  /* ── Transitions ─────────────────────────────────────────── */
+  --transition-fast:   150ms ease;
+  --transition-base:   200ms ease;
+  --transition-slow:   300ms ease;
+
+  /* ── Layout ──────────────────────────────────────────────── */
+  --sidebar-width:   280px;
+  --navbar-height:   80px;
+}
