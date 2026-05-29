@@ -1,27 +1,76 @@
-import { useEffect, useState } from "react"
+import { useEffect,useState } from "react"
 
 import AdminLayout from "../layouts/AdminLayout"
-import { EmptyState, LoadingGrid, PageShell, SectionCard, StatusPill } from "../components/admin/AdminPageElements"
-import { Layers3, Plus } from "lucide-react"
 
-const services=[
-  { name:"AC Repair", category:"Electrical", price:"₹499", status:"Active" },
-  { name:"Pipe Fix", category:"Plumbing", price:"₹299", status:"Active" },
-  { name:"Deep Cleaning", category:"Cleaning", price:"₹899", status:"Draft" },
-  { name:"Appliance Service", category:"Repair", price:"₹799", status:"Active" }
-]
+import {
+
+EmptyState,
+LoadingGrid,
+PageShell,
+SectionCard,
+StatusPill
+
+}
+
+from "../components/admin/AdminPageElements"
+
+import { Plus } from "lucide-react"
+
+import {
+
+getServices
+
+}
+
+from "../services/adminService"
 
 function ServiceList(){
+
+const [services,setServices]=useState([])
 
 const [loading,setLoading]=useState(true)
 
 useEffect(()=>{
 
-const timer=setTimeout(()=>setLoading(false),450)
-
-return()=>clearTimeout(timer)
+fetchServices()
 
 },[])
+
+const fetchServices=async()=>{
+
+try{
+
+setLoading(true)
+
+const res=
+
+await getServices()
+
+setServices(
+
+res.data.services
+
+||
+
+[]
+
+)
+
+}
+
+catch(error){
+
+console.log(error)
+
+}
+
+finally{
+
+setLoading(false)
+
+}
+
+}
 
 return(
 
@@ -31,13 +80,21 @@ return(
 
 title="Service List"
 
-description="Prepare the service catalog table with pricing, category, and status fields for live data integration."
+description="Manage services available across the Homster platform."
 
 actions={[
 
-<button key="add-service" type="button" className="inline-flex items-center gap-2 rounded-2xl bg-[#031B52] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#04225f]">
+<button
 
-<Plus size={16} />
+key="add-service"
+
+type="button"
+
+className="btn btn--primary"
+
+>
+
+<Plus size={16}/>
 
 Add Service
 
@@ -47,27 +104,77 @@ Add Service
 
 >
 
-<SectionCard title="Service Catalog" description="Service Name, Category, Price, Status, and actions are structured for the API.">
+<SectionCard
 
-{loading ? <LoadingGrid cards={4} /> : (
+title="Service Catalog"
 
-<div className="overflow-x-auto">
+description="Live service data from backend."
 
-<table className="w-full min-w-[760px]">
+>
+
+{
+
+loading
+
+?
+
+<LoadingGrid cards={4}/>
+
+:
+
+<div className="admin-table-wrapper">
+
+<table
+
+className="
+
+admin-table
+
+admin-table--min-wide
+
+"
+
+>
 
 <thead>
 
-<tr className="border-b border-slate-200 text-left text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+<tr>
 
-<th className="pb-4">Service Name</th>
+<th>
 
-<th className="pb-4">Category</th>
+Service
 
-<th className="pb-4">Price</th>
+</th>
 
-<th className="pb-4">Status</th>
+<th>
 
-<th className="pb-4">Actions</th>
+Category
+
+</th>
+
+<th>
+
+Price
+
+</th>
+
+<th>
+
+Duration
+
+</th>
+
+<th>
+
+Status
+
+</th>
+
+<th>
+
+Created
+
+</th>
 
 </tr>
 
@@ -75,33 +182,183 @@ Add Service
 
 <tbody>
 
-{services.map((service)=>(
+{
 
-<tr key={service.name} className="border-b border-slate-100 last:border-0">
+services.length===0
 
-<td className="py-5 font-medium text-slate-900">{service.name}</td>
+?
 
-<td className="py-5 text-slate-600">{service.category}</td>
+<tr>
 
-<td className="py-5 text-slate-600">{service.price}</td>
+<td
 
-<td className="py-5"><StatusPill status={service.status} /></td>
+colSpan="6"
 
-<td className="py-5">
+className="
 
-<div className="flex flex-wrap gap-2">
+py-10
 
-<button type="button" className="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700">Edit</button>
+text-center
 
-<button type="button" className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700">Publish</button>
+text-slate-500
 
-</div>
+"
+
+>
+
+No services found
 
 </td>
 
 </tr>
 
-))}
+:
+
+services.map((service)=>(
+
+<tr
+
+key={service._id}
+
+>
+
+<td>
+
+<div>
+
+<p
+
+className="
+
+admin-table__cell-primary
+
+"
+
+>
+
+{
+
+service.name
+
+}
+
+</p>
+
+<p
+
+className="
+
+admin-table__cell-sub
+
+"
+
+>
+
+{
+
+service.description
+
+||
+
+"No description"
+
+}
+
+</p>
+
+</div>
+
+</td>
+
+<td>
+
+{
+
+service.category?.name
+
+||
+
+"-"
+
+}
+
+</td>
+
+<td>
+
+₹
+
+{
+
+service.discountedPrice
+
+||
+
+service.basePrice
+
+||
+
+0
+
+}
+
+</td>
+
+<td>
+
+{
+
+service.estimatedDuration
+
+||
+
+"-"
+
+}
+
+</td>
+
+<td>
+
+<StatusPill
+
+status={
+
+service.isActive
+
+?
+
+"Active"
+
+:
+
+"Inactive"
+
+}
+
+/>
+
+</td>
+
+<td>
+
+{
+
+new Date(
+
+service.createdAt
+
+).toLocaleDateString()
+
+}
+
+</td>
+
+</tr>
+
+))
+
+}
 
 </tbody>
 
@@ -109,13 +366,25 @@ Add Service
 
 </div>
 
-)}
+}
 
 </SectionCard>
 
-<SectionCard title="Integration Placeholder" description="Keeps the future empty state ready for live service CRUD actions.">
+<SectionCard
 
-<EmptyState title="API Integration Pending" description="The service catalog API will populate this area with filters, bulk actions, and editable rows." />
+title="Service Analytics"
+
+description="Future service insights and reporting."
+
+>
+
+<EmptyState
+
+title="Analytics Coming Soon"
+
+description="Service performance charts and trends will appear here."
+
+/>
 
 </SectionCard>
 
