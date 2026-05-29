@@ -1,130 +1,714 @@
 import AdminLayout from "../layouts/AdminLayout"
 import { useEffect, useState } from "react"
+
 import {
-  EmptyState,
-  LoadingGrid,
-  MetricCard,
-  PageShell,
-  SectionCard,
-  StatusPill,
-} from "../components/admin/AdminPageElements"
-import { Briefcase, ShieldCheck, Star, Users } from "lucide-react"
+EmptyState,
+LoadingGrid,
+MetricCard,
+PageShell,
+SectionCard,
+StatusPill
+}
 
-function Providers() {
-  const providers = [
-    { id: "VEN001", business: "Spark Electricals", owner: "Rahul Kumar",  phone: "9876543210", status: "Pending"  },
-    { id: "VEN002", business: "Quick Plumbing",    owner: "Amit Sharma",  phone: "9898989898", status: "Approved" },
-    { id: "VEN003", business: "Home Assist",       owner: "Neha Verma",   phone: "9123456780", status: "Blocked"  },
-    { id: "VEN004", business: "Elite Repairs",     owner: "Rohit Gupta",  phone: "9988776655", status: "Approved" },
-  ]
+from "../components/admin/AdminPageElements"
 
-  const [loading, setLoading] = useState(true)
+import {
+Briefcase,
+ShieldCheck,
+Star,
+Users
+}
 
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 500)
-    return () => clearTimeout(timer)
-  }, [])
+from "lucide-react"
 
-  return (
-    <AdminLayout>
-      <PageShell
-        title="Providers"
-        description="Manage vendors, approvals, service coverage, and operational status."
-      >
-        {/* Metric Cards */}
-        <div className="metric-grid metric-grid--4">
-          <MetricCard
-            label="All Providers"
-            value="184"
-            change="+8 this week"
-            icon={<Briefcase size={20} />}
-            accentClassName="accent-navy"
-          />
-          <MetricCard
-            label="Approved"
-            value="162"
-            change="Ready for live bookings"
-            icon={<ShieldCheck size={20} />}
-            accentClassName="accent-success"
-          />
-          <MetricCard
-            label="Pending Review"
-            value="14"
-            change="Requires admin action"
-            icon={<Users size={20} />}
-            accentClassName="accent-warning"
-          />
-          <MetricCard
-            label="Average Rating"
-            value="4.8/5"
-            change="Customer satisfaction strong"
-            icon={<Star size={20} />}
-            accentClassName="accent-cyan"
-          />
-        </div>
+import {
 
-        {/* Provider Table */}
-        <SectionCard
-          title="Provider Registry"
-          description="Monitor vendors, approvals, and operational status."
-        >
-          {loading ? (
-            <LoadingGrid cards={4} />
-          ) : (
-            <div className="admin-table-wrapper">
-              <table className="admin-table admin-table--min-wide">
-                <thead>
-                  <tr>
-                    <th>Owner</th>
-                    <th>Business</th>
-                    <th>Phone</th>
-                    <th>Status</th>
-                    <th>Services</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {providers.map((provider) => (
-                    <tr key={provider.id}>
-                      <td>
-                        <p className="admin-table__cell-primary">{provider.owner}</p>
-                        <p className="admin-table__cell-sub">{provider.id}</p>
-                      </td>
-                      <td>{provider.business}</td>
-                      <td>{provider.phone}</td>
-                      <td>
-                        <StatusPill status={provider.status} />
-                      </td>
-                      <td>Electrical, Plumbing, Cleaning</td>
-                      <td>
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                          <button className="btn btn--success">Approve</button>
-                          <button className="btn btn--danger">Reject</button>
-                          <button className="btn btn--outline">Block</button>
-                          <button className="btn btn--outline">Delete</button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </SectionCard>
+getVendors,
+approveVendor,
+rejectVendor,
+blockVendor,
+deleteVendor
 
-        {/* Insights Placeholder */}
-        <SectionCard
-          title="Provider Insights"
-          description="Reserved for backend analytics and provider API integration."
-        >
-          <EmptyState
-            title="API Integration Pending"
-            description="Provider performance analytics and approval queue will appear here."
-          />
-        </SectionCard>
-      </PageShell>
-    </AdminLayout>
-  )
+}
+
+from "../services/adminService"
+
+function Providers(){
+
+const [providers,setProviders]=useState([])
+const [loading,setLoading]=useState(true)
+
+useEffect(()=>{
+
+fetchProviders()
+
+},[])
+
+const fetchProviders=async()=>{
+
+try{
+
+setLoading(true)
+
+const res=await getVendors()
+
+setProviders(
+
+res.data.vendors
+
+||
+
+[]
+
+)
+
+}
+
+catch(error){
+
+console.log(error)
+
+}
+
+finally{
+
+setLoading(false)
+
+}
+
+}
+
+const handleApprove=async(id)=>{
+
+try{
+
+await approveVendor(id)
+
+fetchProviders()
+
+}
+
+catch(error){
+
+console.log(error)
+
+alert(
+
+error.response?.data?.message
+
+||
+
+"Failed"
+
+)
+
+}
+
+}
+
+const handleReject=async(id)=>{
+
+const reason=
+
+window.prompt(
+
+"Reason for rejection"
+
+)
+
+if(!reason)return
+
+try{
+
+await rejectVendor(
+
+id,
+reason
+
+)
+
+fetchProviders()
+
+}
+
+catch(error){
+
+console.log(error)
+
+alert(
+
+error.response?.data?.message
+
+||
+
+"Failed"
+
+)
+
+}
+
+}
+
+const handleBlock=async(id)=>{
+
+try{
+
+await blockVendor(id)
+
+fetchProviders()
+
+}
+
+catch(error){
+
+console.log(error)
+
+}
+
+}
+
+const handleDelete=async(id)=>{
+
+const ok=
+
+window.confirm(
+
+"Delete vendor?"
+
+)
+
+if(!ok)return
+
+try{
+
+await deleteVendor(id)
+
+fetchProviders()
+
+}
+
+catch(error){
+
+console.log(error)
+
+}
+
+}
+
+const approved=
+
+providers.filter(
+
+p=>
+
+p.vendor?.verificationStatus===
+
+"approved"
+
+).length
+
+const pending=
+
+providers.filter(
+
+p=>
+
+p.vendor?.verificationStatus===
+
+"pending"
+
+).length
+
+return(
+
+<AdminLayout>
+
+<PageShell
+
+title="Providers"
+
+description="Manage vendors, approvals, verification status, and operational controls."
+
+>
+
+<div className="metric-grid metric-grid--4">
+
+<MetricCard
+
+label="All Providers"
+
+value={providers.length}
+
+change="+ Live Data"
+
+icon={
+
+<Briefcase size={20}/>
+
+}
+
+accentClassName="accent-navy"
+
+/>
+
+<MetricCard
+
+label="Approved"
+
+value={approved}
+
+change="Ready for bookings"
+
+icon={
+
+<ShieldCheck size={20}/>
+
+}
+
+accentClassName="accent-success"
+
+/>
+
+<MetricCard
+
+label="Pending"
+
+value={pending}
+
+change="Requires review"
+
+icon={
+
+<Users size={20}/>
+
+}
+
+accentClassName="accent-warning"
+
+/>
+
+<MetricCard
+
+label="Platform Rating"
+
+value="4.8/5"
+
+change="Customer trust"
+
+icon={
+
+<Star size={20}/>
+
+}
+
+accentClassName="accent-cyan"
+
+/>
+
+</div>
+
+<SectionCard
+
+title="Provider Registry"
+
+description="Monitor approvals and vendor operations."
+
+>
+
+{
+
+loading
+
+?
+
+<LoadingGrid cards={4}/>
+
+:
+
+<div className="admin-table-wrapper">
+
+<table
+
+className="
+
+admin-table
+
+admin-table--min-wide
+
+"
+
+>
+
+<thead>
+
+<tr>
+
+<th>
+
+Owner
+
+</th>
+
+<th>
+
+Business
+
+</th>
+
+<th>
+
+Phone
+
+</th>
+
+<th>
+
+Status
+
+</th>
+
+<th>
+
+Actions
+
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{
+
+providers.length===0
+
+?
+
+<tr>
+
+<td
+
+colSpan="5"
+
+className="
+
+py-10
+
+text-center
+
+text-slate-500
+
+"
+
+>
+
+No vendors found
+
+</td>
+
+</tr>
+
+:
+
+providers.map((provider)=>{
+
+const status=
+
+provider.vendor
+
+?.verificationStatus
+
+||
+
+"pending"
+
+return(
+
+<tr
+
+key={provider._id}
+
+>
+
+<td>
+
+<p
+
+className="
+
+admin-table__cell-primary
+
+"
+
+>
+
+{
+
+provider.firstName
+
+}
+
+{
+
+" "
+
+}
+
+{
+
+provider.lastName
+
+}
+
+</p>
+
+<p
+
+className="
+
+admin-table__cell-sub
+
+"
+
+>
+
+{
+
+provider.userId
+
+}
+
+</p>
+
+</td>
+
+<td>
+
+{
+
+provider.vendor
+
+?.businessName
+
+||
+
+"-"
+
+}
+
+</td>
+
+<td>
+
+{
+
+provider.phone
+
+||
+
+"-"
+
+}
+
+</td>
+
+<td>
+
+<StatusPill
+
+status={status}
+
+/>
+
+</td>
+
+<td>
+
+<div
+
+style={{
+
+display:"flex",
+
+gap:8,
+
+flexWrap:"wrap"
+
+}}
+
+>
+
+{
+
+status!==
+
+"approved"
+
+&&
+
+<button
+
+onClick={()=>{
+
+handleApprove(
+
+provider._id
+
+)
+
+}}
+
+className="
+
+btn
+
+btn--success
+
+"
+
+>
+
+Approve
+
+</button>
+
+}
+
+{
+
+status!==
+
+"rejected"
+
+&&
+
+<button
+
+onClick={()=>{
+
+handleReject(
+
+provider._id
+
+)
+
+}}
+
+className="
+
+btn
+
+btn--danger
+
+"
+
+>
+
+Reject
+
+</button>
+
+}
+
+<button
+
+onClick={()=>{
+
+handleBlock(
+
+provider._id
+
+)
+
+}}
+
+className="
+
+btn
+
+btn--outline
+
+"
+
+>
+
+Block
+
+</button>
+
+<button
+
+onClick={()=>{
+
+handleDelete(
+
+provider._id
+
+)
+
+}}
+
+className="
+
+btn
+
+btn--outline
+
+"
+
+>
+
+Delete
+
+</button>
+
+</div>
+
+</td>
+
+</tr>
+
+)
+
+})
+
+}
+
+</tbody>
+
+</table>
+
+</div>
+
+}
+
+</SectionCard>
+
+<SectionCard
+
+title="Provider Insights"
+
+description="Analytics space reserved for growth metrics."
+
+>
+
+<EmptyState
+
+title="Analytics Coming Soon"
+
+description="Provider insights and performance charts will appear here."
+
+/>
+
+</SectionCard>
+
+</PageShell>
+
+</AdminLayout>
+
+)
+
 }
 
 export default Providers

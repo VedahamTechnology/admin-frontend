@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const API="http://localhost:5000/api/admin/users"
+const API="http://localhost:5000/api/admin/uses"
 
 export const getUsers=async(
 

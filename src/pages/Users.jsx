@@ -1,15 +1,26 @@
 import AdminLayout from "../layouts/AdminLayout"
+
 import { useEffect,useState } from "react"
-import { getUsers } from "../services/userService"
+
+import {
+
+getUsers,
+blockUser,
+unblockUser,
+deleteUser,
+searchUsers
+
+} from "../services/adminService"
 
 function Users(){
 
-
 const [users,setUsers]=useState([])
 
-const [loading,setLoading]=
+const [loading,setLoading]=useState(true)
 
-useState(true)
+const [search,setSearch]=useState("")
+
+const [filter,setFilter]=useState("all")
 
 useEffect(()=>{
 
@@ -21,13 +32,13 @@ const fetchUsers=async()=>{
 
 try{
 
-const data=
+setLoading(true)
 
-await getUsers()
+const res=await getUsers()
 
 setUsers(
 
-data.users
+res.data.users
 
 ||
 
@@ -50,6 +61,127 @@ setLoading(false)
 }
 
 }
+
+const handleSearch=async()=>{
+
+try{
+
+if(!search){
+
+fetchUsers()
+
+return
+
+}
+
+const res=
+
+await searchUsers(search)
+
+setUsers(
+
+res.data.users
+
+||
+
+[]
+
+)
+
+}
+
+catch(error){
+
+console.log(error)
+
+}
+
+}
+
+const handleBlock=async(id)=>{
+
+try{
+
+await blockUser(id)
+
+fetchUsers()
+
+}
+
+catch(error){
+
+console.log(error)
+
+}
+
+}
+
+const handleUnblock=async(id)=>{
+
+try{
+
+await unblockUser(id)
+
+fetchUsers()
+
+}
+
+catch(error){
+
+console.log(error)
+
+}
+
+}
+
+const handleDelete=async(id)=>{
+
+const ok=
+
+window.confirm(
+
+"Delete user?"
+
+)
+
+if(!ok)return
+
+try{
+
+await deleteUser(id)
+
+fetchUsers()
+
+}
+
+catch(error){
+
+console.log(error)
+
+}
+
+}
+
+const filteredUsers=
+
+users.filter((user)=>{
+
+if(filter==="active"){
+
+return !user.isBanned
+
+}
+
+if(filter==="blocked"){
+
+return user.isBanned
+
+}
+
+return true
+
+})
+
 return(
 
 <AdminLayout>
@@ -74,38 +206,117 @@ Manage customer accounts
 
 </div>
 
-
 <div className="bg-white rounded-3xl border border-slate-200 p-6">
 
 <div className="flex gap-4 mb-6">
 
 <input
 
+value={search}
+
+onChange={(e)=>{
+
+setSearch(
+
+e.target.value
+
+)
+
+}}
+
 placeholder="Search users..."
 
-className="flex-1 border border-slate-200 rounded-2xl px-4 py-3 outline-none focus:ring-2 focus:ring-cyan-500"
+className="
+
+flex-1
+
+border
+
+border-slate-200
+
+rounded-2xl
+
+px-4
+
+py-3
+
+outline-none
+
+focus:ring-2
+
+focus:ring-cyan-500
+
+"
 
 />
 
-<select
+<button
 
-className="border border-slate-200 rounded-2xl px-4 py-3"
+onClick={handleSearch}
+
+className="
+
+bg-cyan-600
+
+text-white
+
+px-5
+
+rounded-2xl
+
+hover:bg-cyan-700
+
+"
 
 >
 
-<option>
+Search
+
+</button>
+
+<select
+
+value={filter}
+
+onChange={(e)=>{
+
+setFilter(
+
+e.target.value
+
+)
+
+}}
+
+className="
+
+border
+
+border-slate-200
+
+rounded-2xl
+
+px-4
+
+py-3
+
+"
+
+>
+
+<option value="all">
 
 All Users
 
 </option>
 
-<option>
+<option value="active">
 
 Active
 
 </option>
 
-<option>
+<option value="blocked">
 
 Blocked
 
@@ -114,6 +325,7 @@ Blocked
 </select>
 
 </div>
+
 {
 
 loading
@@ -127,10 +339,6 @@ Loading users...
 </p>
 
 :
-
-null
-
-}
 
 <div className="overflow-x-auto">
 
@@ -173,19 +381,50 @@ Actions
 </tr>
 
 </thead>
-
-
 <tbody>
 
 {
 
-users.map((user)=>(
+filteredUsers.length===0
+
+?
+
+<tr>
+
+<td
+
+colSpan="5"
+
+className="
+
+py-10
+text-center
+text-slate-500
+
+"
+
+>
+
+No users found
+
+</td>
+
+</tr>
+
+:
+
+filteredUsers.map((user)=>(
 
 <tr
 
 key={user._id}
 
-className="border-b hover:bg-slate-50"
+className="
+
+border-b
+hover:bg-slate-50
+
+"
 
 >
 
@@ -195,13 +434,17 @@ className="border-b hover:bg-slate-50"
 
 <p className="font-medium">
 
-{`${user.firstName} ${user.lastName}`}
+{user.firstName}
+
+{" "}
+
+{user.lastName}
 
 </p>
 
 <p className="text-sm text-slate-500">
 
-{user.Id}
+{user.userId}
 
 </p>
 
@@ -227,19 +470,24 @@ className="border-b hover:bg-slate-50"
 
 className={
 
-`px-3 py-1 rounded-full text-sm
+`
+
+px-3
+py-1
+rounded-full
+text-sm
 
 ${
 
-!user.isBanned
+user.isBanned
 
 ?
 
-"bg-green-100 text-green-700"
+"bg-red-100 text-red-600"
 
 :
 
-"bg-red-100 text-red-600"
+"bg-green-100 text-green-700"
 
 }
 
@@ -271,9 +519,63 @@ user.isBanned
 
 <div className="flex gap-2">
 
+{
+
+user.isBanned
+
+?
+
 <button
 
-className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-lg"
+onClick={()=>{
+
+handleUnblock(
+
+user._id
+
+)
+
+}}
+
+className="
+
+bg-green-100
+text-green-700
+px-3
+py-1
+rounded-lg
+
+"
+
+>
+
+Unblock
+
+</button>
+
+:
+
+<button
+
+onClick={()=>{
+
+handleBlock(
+
+user._id
+
+)
+
+}}
+
+className="
+
+bg-yellow-100
+text-yellow-700
+px-3
+py-1
+rounded-lg
+
+"
 
 >
 
@@ -281,9 +583,29 @@ Block
 
 </button>
 
+}
+
 <button
 
-className="bg-red-100 text-red-600 px-3 py-1 rounded-lg"
+onClick={()=>{
+
+handleDelete(
+
+user._id
+
+)
+
+}}
+
+className="
+
+bg-red-100
+text-red-600
+px-3
+py-1
+rounded-lg
+
+"
 
 >
 
@@ -306,6 +628,8 @@ Delete
 </table>
 
 </div>
+
+}
 
 </div>
 
