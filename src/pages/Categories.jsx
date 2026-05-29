@@ -1,27 +1,76 @@
-import { useEffect, useState } from "react"
+import { useEffect,useState } from "react"
 
 import AdminLayout from "../layouts/AdminLayout"
-import { EmptyState, LoadingGrid, PageShell, SectionCard, StatusPill } from "../components/admin/AdminPageElements"
-import { Plus, Shapes } from "lucide-react"
 
-const categories=[
-  { name:"Electrical", date:"12 Mar 2026", status:"Active" },
-  { name:"Plumbing", date:"19 Mar 2026", status:"Active" },
-  { name:"Cleaning", date:"01 Apr 2026", status:"Draft" },
-  { name:"Appliance Repair", date:"11 Apr 2026", status:"Active" }
-]
+import {
+
+EmptyState,
+LoadingGrid,
+PageShell,
+SectionCard,
+StatusPill
+
+}
+
+from "../components/admin/AdminPageElements"
+
+import { Plus } from "lucide-react"
+
+import {
+
+getCategories
+
+}
+
+from "../services/adminService"
 
 function Categories(){
+
+const [categories,setCategories]=useState([])
 
 const [loading,setLoading]=useState(true)
 
 useEffect(()=>{
 
-const timer=setTimeout(()=>setLoading(false),450)
-
-return()=>clearTimeout(timer)
+fetchCategories()
 
 },[])
+
+const fetchCategories=async()=>{
+
+try{
+
+setLoading(true)
+
+const res=
+
+await getCategories()
+
+setCategories(
+
+res.data.categories
+
+||
+
+[]
+
+)
+
+}
+
+catch(error){
+
+console.log(error)
+
+}
+
+finally{
+
+setLoading(false)
+
+}
+
+}
 
 return(
 
@@ -31,13 +80,21 @@ return(
 
 title="Categories"
 
-description="Prepare category management for the service catalog with a production-friendly table layout."
+description="Manage service categories available across the Homster platform."
 
 actions={[
 
-<button key="add-category" type="button" className="inline-flex items-center gap-2 rounded-2xl bg-[#031B52] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#04225f]">
+<button
 
-<Plus size={16} />
+key="add-category"
+
+type="button"
+
+className="btn btn--primary"
+
+>
+
+<Plus size={16}/>
 
 Add Category
 
@@ -47,25 +104,77 @@ Add Category
 
 >
 
-<SectionCard title="Category Table" description="Category Name, Created Date, Status, and Actions are ready for API binding.">
+<SectionCard
 
-{loading ? <LoadingGrid cards={4} /> : (
+title="Category Registry"
 
-<div className="overflow-x-auto">
+description="Live category data from backend."
 
-<table className="w-full min-w-[760px]">
+>
+
+{
+
+loading
+
+?
+
+<LoadingGrid cards={4}/>
+
+:
+
+<div className="admin-table-wrapper">
+
+<table
+
+className="
+
+admin-table
+
+admin-table--min-wide
+
+"
+
+>
 
 <thead>
 
-<tr className="border-b border-slate-200 text-left text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+<tr>
 
-<th className="pb-4">Category Name</th>
+<th>
 
-<th className="pb-4">Created Date</th>
+Category
 
-<th className="pb-4">Status</th>
+</th>
 
-<th className="pb-4">Actions</th>
+<th>
+
+Category ID
+
+</th>
+
+<th>
+
+Base Price
+
+</th>
+
+<th>
+
+Services
+
+</th>
+
+<th>
+
+Status
+
+</th>
+
+<th>
+
+Created
+
+</th>
 
 </tr>
 
@@ -73,31 +182,179 @@ Add Category
 
 <tbody>
 
-{categories.map((category)=>(
+{
 
-<tr key={category.name} className="border-b border-slate-100 last:border-0">
+categories.length===0
 
-<td className="py-5 font-medium text-slate-900">{category.name}</td>
+?
 
-<td className="py-5 text-slate-600">{category.date}</td>
+<tr>
 
-<td className="py-5"><StatusPill status={category.status} /></td>
+<td
 
-<td className="py-5">
+colSpan="6"
 
-<div className="flex flex-wrap gap-2">
+className="
 
-<button type="button" className="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700">Edit</button>
+py-10
 
-<button type="button" className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-700">Delete</button>
+text-center
 
-</div>
+text-slate-500
+
+"
+
+>
+
+No categories found
 
 </td>
 
 </tr>
 
-))}
+:
+
+categories.map((category)=>(
+
+<tr
+
+key={category._id}
+
+>
+
+<td>
+
+<div>
+
+<p
+
+className="
+
+admin-table__cell-primary
+
+"
+
+>
+
+{
+
+category.name
+
+}
+
+</p>
+
+<p
+
+className="
+
+admin-table__cell-sub
+
+"
+
+>
+
+{
+
+category.description
+
+||
+
+"No description"
+
+}
+
+</p>
+
+</div>
+
+</td>
+
+<td>
+
+{
+
+category.categoryId
+
+||
+
+"-"
+
+}
+
+</td>
+
+<td>
+
+₹
+
+{
+
+category.basePrice
+
+||
+
+0
+
+}
+
+</td>
+
+<td>
+
+{
+
+category.totalServices
+
+||
+
+0
+
+}
+
+</td>
+
+<td>
+
+<StatusPill
+
+status={
+
+category.isActive
+
+?
+
+"Active"
+
+:
+
+"Inactive"
+
+}
+
+/>
+
+</td>
+
+<td>
+
+{
+
+new Date(
+
+category.createdAt
+
+).toLocaleDateString()
+
+}
+
+</td>
+
+</tr>
+
+))
+
+}
 
 </tbody>
 
@@ -105,13 +362,25 @@ Add Category
 
 </div>
 
-)}
+}
 
 </SectionCard>
 
-<SectionCard title="Integration Placeholder" description="Keeps a clear empty state available for future backend wiring.">
+<SectionCard
 
-<EmptyState title="API Integration Pending" description="Category creation, search, and status filters will connect here once the backend is ready." />
+title="Category Analytics"
+
+description="Future category insights and reporting."
+
+>
+
+<EmptyState
+
+title="Analytics Coming Soon"
+
+description="Category growth trends and performance charts will appear here."
+
+/>
 
 </SectionCard>
 

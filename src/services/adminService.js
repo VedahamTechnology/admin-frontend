@@ -17,6 +17,16 @@ return API.put(
 )
 
 }
+export const getCategories=()=>{
+
+return API.get(
+
+"/admin/categories?isActive=all&limit=100"
+
+)
+
+}
+
 
 export const unblockUser=(id)=>{
 
@@ -107,21 +117,6 @@ return API.delete(
 )
 
 }
-
-
-
-// CATEGORIES
-
-export const getCategories=()=>{
-
-return API.get(
-
-"/admin/categories"
-
-)
-
-}
-
 
 
 // SERVICES

@@ -24,56 +24,110 @@ function Sidebar() {
   const location = useLocation()
   const navigate = useNavigate()
 
+
   const menu = [
-    {
-      name: "Dashboard",
-      path: "/dashboard",
-      icon: <LayoutDashboard size={18} />,
-    },
-    {
-      name: "Users",
-      icon: <Users size={18} />,
-      children: [
-        { name: "All Users",       path: "/users" },
-        { name: "User Bookings",   path: "/users/bookings" },
-        { name: "User Analytics",  path: "/users/analytics" },
-      ],
-    },
-    {
-      name: "Vendors",
-      icon: <Briefcase size={18} />,
-      children: [
-        { name: "All Vendors",     path: "/vendors" },
-        { name: "Vendor Services", path: "/vendors/services" },
-      ],
-    },
-    {
-      name: "Workers",
-      icon: <UserCog size={18} />,
-      children: [
-        { name: "All Workers",      path: "/workers" },
-        { name: "Worker Payments",  path: "/workers/payments" },
-      ],
-    },
-    {
-      name: "Bookings",
-      icon: <CalendarCheck size={18} />,
-      children: [
-        { name: "Active",    path: "/bookings" },
-        { name: "Pending",   path: "/bookings/pending" },
-        { name: "Completed", path: "/bookings/completed" },
-      ],
-    },
-    { name: "Scrap Items",     path: "/scrap",           icon: <Package size={18} /> },
-    { name: "Payments",        path: "/payments",        icon: <Wallet size={18} /> },
-    { name: "Settlements",     path: "/settlements",     icon: <Receipt size={18} /> },
-    { name: "User Catalog",    path: "/catalog",         icon: <BookOpen size={18} /> },
-    { name: "Vendor Services", path: "/vendor-services", icon: <Layers3 size={18} /> },
-    { name: "Reports",         path: "/reports",         icon: <BarChart3 size={18} /> },
-    { name: "Reviews",         path: "/reviews",         icon: <MessageSquare size={18} /> },
-    { name: "Plans",           path: "/plans",           icon: <BadgeIndianRupee size={18} /> },
-    { name: "Settings",        path: "/settings",        icon: <Settings size={18} /> },
-  ]
+  {
+    name: "Dashboard",
+    path: "/dashboard",
+    icon: <LayoutDashboard size={18} />,
+  },
+
+  {
+    name: "Users",
+    icon: <Users size={18} />,
+    children: [
+      { name: "All Users", path: "/users" },
+      { name: "User Bookings", path: "/users/bookings" },
+      { name: "User Analytics", path: "/users/analytics" },
+    ],
+  },
+
+  {
+    name: "Vendors",
+    icon: <Briefcase size={18} />,
+    children: [
+      { name: "All Vendors", path: "/vendors" },
+      { name: "Vendor Services", path: "/vendors/services" },
+    ],
+  },
+
+  {
+    name: "Workers",
+    icon: <UserCog size={18} />,
+    children: [
+      { name: "All Workers", path: "/workers" },
+      { name: "Worker Payments", path: "/workers/payments" },
+    ],
+  },
+
+  {
+    name: "Services",
+    icon: <Layers3 size={18} />,
+    children: [
+      { name: "Categories", path: "/services/categories" },
+      { name: "Service List", path: "/services/list" },
+      { name: "Pricing", path: "/services/pricing" },
+    ],
+  },
+
+  {
+    name: "Bookings",
+    icon: <CalendarCheck size={18} />,
+    children: [
+      { name: "Active", path: "/bookings" },
+      { name: "Pending", path: "/bookings/pending" },
+      { name: "Completed", path: "/bookings/completed" },
+    ],
+  },
+
+  {
+    name: "Scrap Items",
+    path: "/scrap",
+    icon: <Package size={18} />,
+  },
+
+  {
+    name: "Payments",
+    path: "/payments",
+    icon: <Wallet size={18} />,
+  },
+
+  {
+    name: "Settlements",
+    path: "/settlements",
+    icon: <Receipt size={18} />,
+  },
+
+  {
+    name: "User Catalog",
+    path: "/catalog",
+    icon: <BookOpen size={18} />,
+  },
+
+  {
+    name: "Reports",
+    path: "/reports",
+    icon: <BarChart3 size={18} />,
+  },
+
+  {
+    name: "Reviews",
+    path: "/reviews",
+    icon: <MessageSquare size={18} />,
+  },
+
+  {
+    name: "Plans",
+    path: "/plans",
+    icon: <BadgeIndianRupee size={18} />,
+  },
+
+  {
+    name: "Settings",
+    path: "/settings",
+    icon: <Settings size={18} />,
+  },
+]
 
   const [openMenu, setOpenMenu] = useState(() => {
     for (const item of menu) {
