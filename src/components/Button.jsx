@@ -1,7 +1,8 @@
 function Button({
 
 loading,
-text
+text,
+loadingText="Signing In..."
 
 }){
 
@@ -21,7 +22,7 @@ loading
 
 ?
 
-"Signing In..."
+loadingText
 
 :
 

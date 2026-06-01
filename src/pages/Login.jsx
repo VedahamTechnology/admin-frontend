@@ -1,21 +1,34 @@
 import { loginUser } from "../services/authService"
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { FaEnvelope, FaLock } from "react-icons/fa"
 import { HiOutlineChartBar, HiEye, HiEyeOff } from "react-icons/hi"
 import { FiUsers } from "react-icons/fi"
 import { BsShieldCheck } from "react-icons/bs"
 import InputField from "../components/InputField"
 import Button from "../components/Button"
+import { Link } from "react-router-dom"
 
 function Login(){
 
+const navigate=useNavigate()
+
 const [email,setEmail]=useState("")
 const [password,setPassword]=useState("")
+const [role,setRole]=useState("admin")
 const [showPassword,setShowPassword]=useState(false)
 
 const [loading,setLoading]=useState(false)
 
 const [error,setError]=useState("")
+
+const roleOptions=[
+
+{value:"admin",label:"Admin"},
+{value:"vendor",label:"Vendor"},
+{value:"customer",label:"Customer"}
+
+]
 
 const handleLogin=async(e)=>{
 
@@ -47,13 +60,14 @@ const data={
 
 email,
 password,
-role:"admin"
+role
 
 }
 
 const res=await loginUser(data)
 
-console.log(res.data)
+console.log("Logged in user:", res.data.user)
+console.log("Role:", res.data.user.role)
 
 localStorage.setItem(
 
@@ -71,7 +85,25 @@ JSON.stringify(res.data.user)
 
 )
 
-window.location.href="/dashboard"
+const userRole = res.data.user.role
+
+if(userRole === "admin"){
+
+navigate("/dashboard", { replace:true })
+
+}
+
+else if(userRole === "vendor"){
+
+navigate("/vendor/dashboard", { replace:true })
+
+}
+
+else if(userRole === "customer"){
+
+navigate("/user/dashboard", { replace:true })
+
+}
 
 }
 
@@ -262,11 +294,26 @@ Welcome Back!
 
 <p className="text-center text-slate-500 mt-3 mb-10">
 
-Sign in to access admin panel
+Sign in to access your panel
 
 </p>
 
 <form onSubmit={handleLogin}>
+
+<div className="mb-5">
+  <select
+    value={role}
+    onChange={(e)=>setRole(e.target.value)}
+    className="w-full h-16 rounded-2xl bg-slate-100 px-6 text-slate-700 outline-none"
+  >
+    {roleOptions.map((option)=>(
+      <option key={option.value} value={option.value}>
+        {option.label}
+      </option>
+    ))}
+  </select>
+</div>
+
 
 <InputField
 
@@ -281,6 +328,7 @@ value={email}
 onChange={(e)=>setEmail(e.target.value)}
 
 />
+
 
 <InputField
 
@@ -372,6 +420,16 @@ loading={loading}
 text="Sign In"
 
 />
+
+<p className="text-center text-slate-500 mt-6 text-sm">
+  Don't have an account?{" "}
+  <Link
+    to="/register"
+    className="text-cyan-600 font-semibold hover:text-cyan-700"
+  >
+    Register
+  </Link>
+</p>
 
 </form>
 
