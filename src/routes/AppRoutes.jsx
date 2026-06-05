@@ -30,11 +30,15 @@ import ScrapItems         from "../pages/ScrapItems"
 import UserCatalog        from "../pages/UserCatalog"
 import Reviews            from "../pages/Reviews"
 import Plans              from "../pages/Plans"
-import VendorDashboard    from "../Vendor/pages/VendorDashboard"
-import VendorBookings     from "../Vendor/pages/VendorBookings"
-import VendorServices     from "../Vendor/pages/VendorServices"
-import VendorProfile      from "../Vendor/pages/VendorProfile"
-import UserDashboard      from "../users/pages/UserDashboard"
+import VendorDashboard    from "../modules/vendor/pages/VendorDashboard"
+import VendorBookings     from "../modules/vendor/pages/VendorBookings"
+import VendorProfile      from "../modules/vendor/pages/VendorProfile"
+import UserDashboard      from "../modules/users/pages/UserDashboard"
+import VendorWorkers      from "../modules/vendor/pages/VendorWorkers";
+import VendorAvailability from "../modules/vendor/pages/VendorAvailability";
+import VendorSchedule     from "../modules/vendor/pages/VendorSchedule";
+import VendorNotifications from "../modules/vendor/pages/VendorNotifications";
+import VendorSettings      from "../modules/vendor/pages/VendorSettings";
 
 function AppRoutes() {
   return (
@@ -75,9 +79,14 @@ function AppRoutes() {
         <Route path="/vendor/login"         element={<Login />} />
         <Route path="/vendor/dashboard"     element={<VendorDashboard />} />
         <Route path="/vendor/bookings"      element={<VendorBookings />} />
-        <Route path="/vendor/services"      element={<VendorServices />} />
         <Route path="/vendor/profile"       element={<VendorProfile />} />
         <Route path="/user/dashboard"       element={<UserDashboard />} />
+        <Route path="/vendor/workers"       element={<VendorWorkers />} />
+        <Route path="/vendor/availability"  element={<VendorAvailability />} />
+        <Route path="/vendor/schedule"      element={<VendorSchedule />} />
+        <Route path="/vendor/notifications" element={<VendorNotifications />} />
+        <Route path="/vendor/settings"      element={<VendorSettings />} />
+        <Route path="/vendor/profile"       element={<VendorProfile />} />
       </Routes>
     </BrowserRouter>
   )
