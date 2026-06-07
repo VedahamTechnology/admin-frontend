@@ -1,4 +1,4 @@
-import { Bell, Search } from "lucide-react";
+import { Bell } from "lucide-react";
 import { Link } from "react-router-dom";
 import { mockVendorProfile } from "../constants/mockData";
 import { useNotifications } from "../hooks/useVendor";
@@ -20,33 +20,17 @@ export default function VendorNavbar() {
       <div className="navbar__right">
         <Link
           to="/vendor/notifications"
-          style={{ position: "relative", color: "var(--color-text-secondary)", display: "flex" }}
+          className="navbar__notif-link"
         >
           <Bell size={20} />
           {unreadCount > 0 && (
-            <span
-              style={{
-                position: "absolute",
-                top: -4,
-                right: -4,
-                width: 16,
-                height: 16,
-                borderRadius: 999,
-                background: "var(--color-brand-cyan)",
-                color: "#fff",
-                fontSize: "0.6rem",
-                fontWeight: 800,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
+            <span className="navbar-notif-badge">
               {unreadCount}
             </span>
           )}
         </Link>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div className="navbar__user">
           <div className="navbar__avatar">{initials}</div>
           <div>
             <p className="navbar__user-name">{vendor.ownerName}</p>

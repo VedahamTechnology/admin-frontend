@@ -33,7 +33,13 @@ export default function VendorBookings() {
 
   const [activeTab, setActiveTab]         = useState<Tab>("all");
   const [search, setSearch]               = useState("");
+  const [serviceFilter, setServiceFilter] = useState("");
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+
+  const serviceOptions = useMemo(() => {
+    const names = new Set(bookings.map((b) => b.service.name));
+    return Array.from(names).sort();
+  }, [bookings]);
 
   const tabCounts = useMemo(() => {
     const counts: Record<string, number> = { all: bookings.length };
@@ -46,6 +52,7 @@ export default function VendorBookings() {
   const filtered = useMemo(() => {
     let list = bookings;
     if (activeTab !== "all") list = list.filter((b) => b.status === activeTab);
+    if (serviceFilter) list = list.filter((b) => b.service.name === serviceFilter);
     if (search.trim()) {
       const q = search.toLowerCase();
       list = list.filter(
@@ -56,7 +63,7 @@ export default function VendorBookings() {
       );
     }
     return list;
-  }, [bookings, activeTab, search]);
+  }, [bookings, activeTab, serviceFilter, search]);
 
   return (
     <VendorLayout>
@@ -69,45 +76,15 @@ export default function VendorBookings() {
 
         <SectionCard>
           {/* Status Tabs */}
-          <div
-            style={{
-              display: "flex",
-              gap: "12px",
-              flexWrap: "wrap",
-              marginBottom: "24px",
-            }}
-          >
+          <div className="booking-tabs">
             {TABS.map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  padding: "10px 16px",
-                  borderRadius: "999px",
-                  border:
-                    activeTab === tab.key
-                      ? "2px solid #06b6d4"
-                      : "1px solid #d1d5db",
-                  background:
-                    activeTab === tab.key ? "#ecfeff" : "#ffffff",
-                  cursor: "pointer",
-                  fontWeight: 600,
-                }}
+                className={`booking-tab${activeTab === tab.key ? " booking-tab--active" : ""}`}
               >
                 {tab.label}
-
-                <span
-                  style={{
-                    background: "#06b6d4",
-                    color: "#fff",
-                    borderRadius: "999px",
-                    padding: "2px 8px",
-                    fontSize: "12px",
-                  }}
-                >
+                <span className="booking-tab__count">
                   {tabCounts[tab.key] || 0}
                 </span>
               </button>
@@ -126,13 +103,15 @@ export default function VendorBookings() {
               />
             </div>
             <div style={{ display: "flex", gap: 10 }}>
-              <select className="admin-select">
-                <option>All Services</option>
-                <option>Electrical Repair</option>
-                <option>AC Service</option>
-                <option>Wiring</option>
-                <option>Fan Installation</option>
-                <option>MCB Replacement</option>
+              <select
+                className="admin-select"
+                value={serviceFilter}
+                onChange={(e) => setServiceFilter(e.target.value)}
+              >
+                <option value="">All Services</option>
+                {serviceOptions.map((name) => (
+                  <option key={name} value={name}>{name}</option>
+                ))}
               </select>
             </div>
           </div>

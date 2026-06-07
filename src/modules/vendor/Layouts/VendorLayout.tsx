@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import VendorSidebar from "../Components/VendorSidebar";
 import VendorNavbar from "../Components/VendorNavbar";
+import "../styles/vendor.css";
 
 interface Props {
   children: ReactNode;
@@ -8,33 +9,13 @@ interface Props {
 
 export default function VendorLayout({ children }: Props) {
   return (
-    <div
-      style={{
-        display: "flex",
-        minHeight: "100vh",
-        background: "#f8fafc",
-      }}
-    >
+    <div className="vendor-layout">
       <VendorSidebar />
 
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          minWidth: 0,
-          marginLeft: "300px",
-        }}
-      >
+      <div className="vendor-layout__content">
         <VendorNavbar />
 
-        <main
-          style={{
-            flex: 1,
-            padding: "24px",
-            overflowX: "hidden",
-          }}
-        >
+        <main className="vendor-layout__main">
           {children}
         </main>
       </div>

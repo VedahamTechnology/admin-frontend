@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, UserPlus, Edit2, Trash2, Star } from "lucide-react";
+import { Search, UserPlus, Edit2, Trash2, Users, Activity, Clock } from "lucide-react";
 import VendorLayout from "../Layouts/VendorLayout";
 
 import {
@@ -66,21 +66,21 @@ export default function VendorWorkers() {
               <p className="metric-card__label">Total Workers</p>
               <p className="metric-card__value">{workers.length}</p>
             </div>
-            <div className="metric-card__icon accent-navy"><UserPlus size={20} /></div>
+            <div className="metric-card__icon accent-navy"><Users size={20} /></div>
           </div>
           <div className="metric-card">
             <div>
               <p className="metric-card__label">Active</p>
               <p className="metric-card__value">{workers.filter((w) => w.status === "active").length}</p>
             </div>
-            <div className="metric-card__icon accent-success"><Star size={20} /></div>
+            <div className="metric-card__icon accent-success"><Activity size={20} /></div>
           </div>
           <div className="metric-card">
             <div>
               <p className="metric-card__label">Currently Busy</p>
               <p className="metric-card__value">{workers.filter((w) => w.availability === "busy").length}</p>
             </div>
-            <div className="metric-card__icon accent-warning"><Star size={20} /></div>
+            <div className="metric-card__icon accent-warning"><Clock size={20} /></div>
           </div>
         </div>
 
@@ -116,13 +116,7 @@ export default function VendorWorkers() {
               onAction={addModal.open}
             />
           ) : (
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
-                gap: 16,
-              }}
-            >
+            <div className="workers-grid">
               {filtered.map((w) => (
                 <WorkerCard
                   key={w.id}
@@ -169,17 +163,17 @@ function WorkerCard({
   return (
     <div className="worker-card">
       {/* Top */}
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 14 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+      <div className="worker-card__header">
+        <div className="worker-card__identity">
           <WorkerAvatar name={worker.name} />
           <div>
-            <p style={{ fontWeight: 700, fontSize: "0.9375rem", margin: 0 }}>{worker.name}</p>
-            <p style={{ fontSize: "0.8rem", color: "var(--color-text-secondary)", margin: "2px 0 0" }}>
+            <p className="worker-card__name">{worker.name}</p>
+            <p className="worker-card__phone">
               {worker.phone}
             </p>
           </div>
         </div>
-        <div style={{ display: "flex", gap: 6 }}>
+        <div className="worker-card__actions">
           <button
             className="btn btn--outline"
             style={{ padding: "6px 10px" }}
@@ -198,37 +192,28 @@ function WorkerCard({
       </div>
 
       {/* Skills */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 14 }}>
+      <div className="worker-card__skills">
         {worker.skills.map((s) => (
           <span key={s} className="skill-tag">{s}</span>
         ))}
       </div>
 
       {/* Stats */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
-          gap: 8,
-          padding: "12px 0",
-          borderTop: "1px solid var(--color-border)",
-          marginBottom: 12,
-        }}
-      >
+      <div className="worker-card__stats">
         {[
           { label: "Assigned", value: worker.assignedJobs  },
           { label: "Completed", value: worker.completedJobs },
           { label: "Rating",   value: `⭐ ${worker.rating}` },
         ].map(({ label, value }) => (
-          <div key={label} style={{ textAlign: "center" }}>
-            <p style={{ fontWeight: 700, fontSize: "1rem", margin: 0 }}>{value}</p>
-            <p style={{ fontSize: "0.7rem", color: "var(--color-text-muted)", margin: 0 }}>{label}</p>
+          <div key={label} className="worker-card__stat">
+            <p className="worker-card__stat-value">{value}</p>
+            <p className="worker-card__stat-label">{label}</p>
           </div>
         ))}
       </div>
 
       {/* Footer */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div className="worker-card__footer">
         <WorkerStatusBadge status={worker.status} />
         <AvailabilityDot status={worker.availability} />
       </div>

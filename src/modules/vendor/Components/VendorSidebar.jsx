@@ -12,46 +12,67 @@ import {
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useNotifications } from "../hooks/useVendor";
 
-const menu = [
+/* ── Sidebar menu structure with section grouping ──────────── */
+const sections = [
   {
-    name: "Dashboard",
-    path: "/vendor/dashboard",
-    icon: <LayoutDashboard size={18} />,
+    label: "OVERVIEW",
+    items: [
+      {
+        name: "Dashboard",
+        path: "/vendor/dashboard",
+        icon: <LayoutDashboard size={18} />,
+      },
+    ],
   },
   {
-    name: "Bookings",
-    path: "/vendor/bookings",
-    icon: <CalendarCheck size={18} />,
+    label: "OPERATIONS",
+    items: [
+      {
+        name: "Bookings",
+        path: "/vendor/bookings",
+        icon: <CalendarCheck size={18} />,
+      },
+      {
+        name: "Workers",
+        path: "/vendor/workers",
+        icon: <UserCog size={18} />,
+      },
+    ],
   },
   {
-    name: "Workers",
-    path: "/vendor/workers",
-    icon: <UserCog size={18} />,
+    label: "PLANNING",
+    items: [
+      {
+        name: "Availability",
+        path: "/vendor/availability",
+        icon: <CalendarDays size={18} />,
+      },
+      {
+        name: "Schedule",
+        path: "/vendor/schedule",
+        icon: <Clock size={18} />,
+      },
+    ],
   },
   {
-    name: "Availability",
-    path: "/vendor/availability",
-    icon: <CalendarDays size={18} />,
-  },
-  {
-    name: "Schedule",
-    path: "/vendor/schedule",
-    icon: <Clock size={18} />,
-  },
-  {
-    name: "Notifications",
-    path: "/vendor/notifications",
-    icon: <Bell size={18} />,
-  },
-  {
-    name: "Settings",
-    path: "/vendor/settings",
-    icon: <Settings size={18} />,
-  },
-  {
-    name: "Profile",
-    path: "/vendor/profile",
-    icon: <User size={18} />,
+    label: "ACCOUNT",
+    items: [
+      {
+        name: "Notifications",
+        path: "/vendor/notifications",
+        icon: <Bell size={18} />,
+      },
+      {
+        name: "Settings",
+        path: "/vendor/settings",
+        icon: <Settings size={18} />,
+      },
+      {
+        name: "Profile",
+        path: "/vendor/profile",
+        icon: <User size={18} />,
+      },
+    ],
   },
 ];
 
@@ -66,125 +87,59 @@ export default function VendorSidebar() {
   };
 
   return (
-    <aside
-      className="sidebar"
-      style={{
-        background: "#0a2540",
-        width: "280px",
-        minWidth: "280px",
-        height: "100vh",
-        position: "fixed",
-        left: 0,
-        top: 0,
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
+    <aside className="vendor-sidebar">
       {/* Brand */}
       <div className="sidebar__brand">
-        <h1
-          style={{
-            color: "#fff",
-            fontSize: "1.8rem",
-            fontWeight: 700,
-            marginBottom: 4,
-          }}
-        >
-          VEDAHAM
-        </h1>
-
-        <p
-          style={{
-            color: "#9fb3c8",
-            fontSize: "0.9rem",
-          }}
-        >
-          Vendor Portal
-        </p>
+        <h1 className="sidebar__brand-name">VEDAHAM</h1>
+        <p className="sidebar__brand-sub">Vendor Portal</p>
       </div>
 
       {/* Navigation */}
-      <nav
-        style={{
-          flex: 1,
-          padding: "16px",
-        }}
-      >
-        <p
-          style={{
-            color: "#7f96b0",
-            fontSize: "0.75rem",
-            letterSpacing: "2px",
-            marginBottom: "16px",
-          }}
-        >
-          MENU
-        </p>
-
-        {menu.map((item) => {
-          const isActive = location.pathname === item.path;
-
-          return (
-            <Link
-              key={item.path}
-              to={item.path}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                padding: "12px 16px",
-                marginBottom: "8px",
-                borderRadius: "12px",
-                textDecoration: "none",
-                color: "#fff",
-                background: isActive ? "#163d72" : "transparent",
-              }}
+      <nav className="vendor-sidebar__nav">
+        {sections.map((section, sectionIdx) => (
+          <div key={section.label}>
+            <p
+              className={`vendor-sidebar__section-label${
+                sectionIdx > 0 ? " vendor-sidebar__section-label--spaced" : ""
+              }`}
             >
-              {item.icon}
+              {section.label}
+            </p>
 
-              <span style={{ flex: 1 }}>{item.name}</span>
+            {section.items.map((item) => {
+              const isActive = location.pathname === item.path;
 
-              {item.name === "Notifications" && unreadCount > 0 && (
-                <span
-                  style={{
-                    background: "#00cfe8",
-                    color: "#fff",
-                    borderRadius: "999px",
-                    padding: "2px 8px",
-                    fontSize: "0.75rem",
-                    fontWeight: 700,
-                  }}
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`vendor-sidebar__item${
+                    isActive ? " vendor-sidebar__item--active" : ""
+                  }`}
                 >
-                  {unreadCount}
-                </span>
-              )}
-            </Link>
-          );
-        })}
+                  {item.icon}
+
+                  <span className="vendor-sidebar__item-label">
+                    {item.name}
+                  </span>
+
+                  {item.name === "Notifications" && unreadCount > 0 && (
+                    <span className="vendor-sidebar__badge">
+                      {unreadCount}
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
+          </div>
+        ))}
       </nav>
 
       {/* Logout */}
-      <div style={{ padding: "16px" }}>
-        <button
-          onClick={logout}
-          style={{
-            width: "100%",
-            padding: "12px",
-            borderRadius: "12px",
-            border: "none",
-            background: "#1c2f6f",
-            color: "#fff",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "8px",
-          }}
-        >
-          <LogOut size={18} />
-          Logout
-        </button>
-      </div>
+      <button onClick={logout} className="vendor-sidebar__logout">
+        <LogOut size={18} />
+        Logout
+      </button>
     </aside>
   );
 }

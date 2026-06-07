@@ -53,7 +53,7 @@ export default function WorkerModal({ worker, onSave, onClose }: Props) {
         </div>
 
         <div className="modal__body">
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
+          <div className="form-grid-2">
             <div className="form-field">
               <label className="form-label form-label--required">Full Name</label>
               <input

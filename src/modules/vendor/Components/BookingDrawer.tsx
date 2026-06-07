@@ -1,8 +1,27 @@
-import { useState } from "react";
-import { X, User, Briefcase, MapPin, Clock, MessageSquare, Users } from "lucide-react";
+import { useState, useMemo } from "react";
+import { X, User, Briefcase, MapPin, Clock, MessageSquare, Users, Check } from "lucide-react";
 import type { Booking, Worker } from "../../types/vendor";
 import { BookingStatusBadge, InfoRow, WorkerAvatar, SectionCard } from "./VendorUI";
 import AssignWorkerModal from "./AssignWorkerModal";
+
+const WORKFLOW_STEPS = ["Received", "Confirmed", "In Progress", "Completed"] as const;
+
+function getStepStates(status: Booking["status"]) {
+  switch (status) {
+    case "pending":
+      return { completed: 0, active: 0, cancelled: false };
+    case "confirmed":
+      return { completed: 1, active: 1, cancelled: false };
+    case "in_progress":
+      return { completed: 2, active: 2, cancelled: false };
+    case "completed":
+      return { completed: 4, active: -1, cancelled: false };
+    case "cancelled":
+      return { completed: 1, active: -1, cancelled: true };
+    default:
+      return { completed: 0, active: 0, cancelled: false };
+  }
+}
 
 interface Props {
   booking: Booking;
@@ -44,6 +63,33 @@ export default function BookingDrawer({
         </div>
 
         <div className="drawer__body">
+          {/* Workflow Stepper */}
+          <div className="workflow-stepper">
+            {(booking.status === "cancelled"
+              ? ["Received", "Cancelled"] as const
+              : WORKFLOW_STEPS
+            ).map((step, idx, arr) => {
+              const { completed, active, cancelled } = getStepStates(booking.status);
+              let modifier = "";
+              if (booking.status === "cancelled") {
+                modifier = idx === 0 ? "workflow-step--completed" : "workflow-step--cancelled";
+              } else if (idx < completed) {
+                modifier = "workflow-step--completed";
+              } else if (idx === active) {
+                modifier = "workflow-step--active";
+              }
+              return (
+                <div key={step} className={`workflow-step ${modifier}`}>
+                  <div className="workflow-step__dot">
+                    {modifier === "workflow-step--completed" ? <Check size={14} /> : idx + 1}
+                  </div>
+                  <span className="workflow-step__label">{step}</span>
+                  {idx < arr.length - 1 && <div className="workflow-step__line" />}
+                </div>
+              );
+            })}
+          </div>
+
           {/* Client */}
           <p className="section-divider"><User size={12} style={{ display: "inline", marginRight: 6 }} />Client Information</p>
           <div className="info-grid">
@@ -74,17 +120,7 @@ export default function BookingDrawer({
           {booking.notes && (
             <>
               <p className="section-divider"><MessageSquare size={12} style={{ display: "inline", marginRight: 6 }} />Notes</p>
-              <div
-                style={{
-                  background: "var(--color-neutral-bg)",
-                  borderRadius: "var(--radius-xl)",
-                  padding: "12px 16px",
-                  fontSize: "0.875rem",
-                  color: "var(--color-text-secondary)",
-                  lineHeight: 1.6,
-                  marginBottom: 16,
-                }}
-              >
+              <div className="notes-block">
                 {booking.notes}
               </div>
             </>
