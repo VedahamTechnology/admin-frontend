@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { X } from "lucide-react";
-import type { Worker } from "../../types/vendor";
+import type { Worker } from "../types/vendor";
 
 const ALL_SKILLS = [
   "Electrical Repair", "AC Service", "Fan Installation",

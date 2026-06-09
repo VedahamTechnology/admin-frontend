@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Calendar, List } from "lucide-react";
+import { Calendar, List, Clock, User, Layers, UserCog } from "lucide-react";
 
 import VendorLayout from "../Layouts/VendorLayout";
 
@@ -51,18 +51,18 @@ export default function VendorSchedule() {
         />
 
         {/* Date Filter */}
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
-          <label style={{ fontSize: "0.875rem", fontWeight: 600 }}>Filter by Date:</label>
+        <div className="schedule-filter-bar">
+          <label className="schedule-filter-label">Filter by Date:</label>
           <input
             type="date"
             className="admin-input"
-            style={{ width: 200 }}
+            style={{ width: 200, padding: "8px 12px" }}
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
           />
           {dateFilter && (
-            <button className="btn btn--outline" style={{ fontSize: "0.8rem" }} onClick={() => setDateFilter("")}>
-              Clear
+            <button className="btn btn--outline" style={{ fontSize: "0.8rem", padding: "8px 12px" }} onClick={() => setDateFilter("")}>
+              Clear Filter
             </button>
           )}
         </div>
@@ -85,26 +85,24 @@ function ListView({ entries }: { entries: typeof mockSchedule }) {
 
   return (
     <SectionCard title="Upcoming Jobs">
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <div className="schedule-list">
         {entries.map((s) => (
-          <div key={s.id} className="schedule-entry">
-            <div style={{ minWidth: 140 }}>
-              <p className="schedule-time">{s.timeSlot}</p>
-              <p style={{ fontSize: "0.75rem", color: "var(--color-text-muted)", margin: 0 }}>{s.date}</p>
-            </div>
-            <div style={{ flex: 1 }}>
-              <p style={{ fontWeight: 700, fontSize: "0.9rem", margin: 0 }}>{s.clientName}</p>
-              <p style={{ fontSize: "0.8rem", color: "var(--color-text-secondary)", margin: "2px 0 0" }}>
-                {s.service}
-              </p>
-            </div>
-            <div style={{ textAlign: "right" }}>
-              <p style={{ fontSize: "0.8rem", color: "var(--color-brand-cyan)", fontWeight: 600, margin: 0 }}>
-                {s.workerName}
-              </p>
-              <div style={{ marginTop: 4 }}>
-                <BookingStatusBadge status={s.status} />
+          <div key={s.id} className={`schedule-entry schedule-entry--${s.status}`}>
+            <div className="schedule-entry__header">
+              <div>
+                <p className="schedule-time"><Clock size={14} /> {s.timeSlot}</p>
+                <p className="schedule-date"><Calendar size={12} /> {s.date}</p>
               </div>
+              <BookingStatusBadge status={s.status} />
+            </div>
+            
+            <div className="schedule-entry__body">
+              <p className="schedule-client"><User size={16} /> {s.clientName}</p>
+              <p className="schedule-service"><Layers size={14} /> {s.service}</p>
+            </div>
+            
+            <div className="schedule-entry__footer">
+              <p className="schedule-worker"><UserCog size={14} /> {s.workerName}</p>
             </div>
           </div>
         ))}
@@ -134,26 +132,20 @@ function WorkerView({ entries }: { entries: typeof mockSchedule }) {
                 No jobs scheduled.
               </p>
             ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <div className="schedule-list">
                 {workerJobs.map((s) => (
-                  <div
-                    key={s.id}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      padding: "12px 16px",
-                      border: "1px solid var(--color-border)",
-                      borderRadius: "var(--radius-xl)",
-                    }}
-                  >
-                    <div>
-                      <p style={{ fontWeight: 600, fontSize: "0.875rem", margin: 0 }}>{s.clientName}</p>
-                      <p style={{ fontSize: "0.8rem", color: "var(--color-text-secondary)", margin: "2px 0 0" }}>
-                        {s.service} · {s.date} · {s.timeSlot}
-                      </p>
+                  <div key={s.id} className={`schedule-entry schedule-entry--${s.status}`}>
+                    <div className="schedule-entry__header">
+                      <div>
+                        <p className="schedule-time"><Clock size={14} /> {s.timeSlot}</p>
+                        <p className="schedule-date"><Calendar size={12} /> {s.date}</p>
+                      </div>
+                      <BookingStatusBadge status={s.status} />
                     </div>
-                    <BookingStatusBadge status={s.status} />
+                    <div className="schedule-entry__body">
+                      <p className="schedule-client"><User size={16} /> {s.clientName}</p>
+                      <p className="schedule-service"><Layers size={14} /> {s.service}</p>
+                    </div>
                   </div>
                 ))}
               </div>

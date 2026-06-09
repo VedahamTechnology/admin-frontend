@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { X, Check } from "lucide-react";
-import type { Worker, Booking } from "../../types/vendor";
+import type { Worker, Booking } from "../types/vendor";
 import { WorkerAvatar, AvailabilityDot } from "./VendorUI";
 
 interface Props {

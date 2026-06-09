@@ -429,65 +429,112 @@
   font-size: 0.75rem;
 }
 
-/* ── Schedule Entries ─────────────────────────────────────── */
+/* ── Schedule Entries (Modern Cards) ────────────────────────── */
 
 .schedule-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
 }
 
 .schedule-entry {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 18px;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   background: var(--color-bg-card);
-  transition: box-shadow var(--transition-fast);
+  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+  position: relative;
+  overflow: hidden;
 }
 
 .schedule-entry:hover {
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-card);
+  transform: translateY(-2px);
 }
 
-.schedule-entry--today {
-  border-left: 4px solid var(--color-brand-cyan);
-  background: rgba(5, 175, 199, 0.03);
+/* Status-based left borders */
+.schedule-entry--pending { border-left: 4px solid var(--color-warning); }
+.schedule-entry--confirmed { border-left: 4px solid var(--color-brand-cyan); }
+.schedule-entry--in_progress { border-left: 4px solid var(--color-brand-navy); }
+.schedule-entry--completed { border-left: 4px solid var(--color-success); }
+.schedule-entry--cancelled { border-left: 4px solid var(--color-danger); opacity: 0.8; }
+
+.schedule-entry__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--color-border-light);
+  padding-bottom: 12px;
 }
 
 .schedule-time {
   font-weight: 700;
   font-size: 0.875rem;
   color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
   margin: 0;
 }
 
 .schedule-date {
   font-size: 0.75rem;
   color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
   margin: 0;
+}
+
+.schedule-entry__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 12px;
 }
 
 .schedule-client {
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 1rem;
   margin: 0;
   color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .schedule-service {
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   color: var(--color-text-secondary);
-  margin: 2px 0 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.schedule-entry__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px dashed var(--color-border-light);
+  margin-top: auto;
 }
 
 .schedule-worker {
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   color: var(--color-brand-cyan);
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   margin: 0;
+  background: rgba(5, 175, 199, 0.08);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
 }
 
 .schedule-filter-bar {

@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { X, User, Briefcase, MapPin, Clock, MessageSquare, Users, Check } from "lucide-react";
-import type { Booking, Worker } from "../../types/vendor";
+import type { Booking, Worker } from "../types/vendor";
 import { BookingStatusBadge, InfoRow, WorkerAvatar, SectionCard } from "./VendorUI";
 import AssignWorkerModal from "./AssignWorkerModal";
 

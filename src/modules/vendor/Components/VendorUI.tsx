@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Loader2, ArrowRight } from "lucide-react";
-import type { BookingStatus, WorkerStatus } from "../../types/vendor";
+import type { BookingStatus, WorkerStatus } from "../types/vendor";
 
 // ── StatusBadge ──────────────────────────────────────────────
 const bookingVariants: Record<BookingStatus, string> = {
