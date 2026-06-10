@@ -1,5 +1,5 @@
 import VendorLayout from "../Layouts/VendorLayout"
-import { PageShell, SectionCard } from "../../../components/admin/AdminPageElements"
+import { PageShell, SectionCard } from "../../admin/components/AdminPageElements"
 
 const profileFields = [
   { label: "Business Name", value: "Homster Vendor Services" },

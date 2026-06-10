@@ -37,13 +37,19 @@ e.preventDefault()
 setError("")
 
 if(!email.trim()){
+
 setError("Email is required")
+
 return
+
 }
 
 if(!password.trim()){
+
 setError("Password is required")
+
 return
+
 }
 
 setLoading(true)
@@ -51,26 +57,56 @@ setLoading(true)
 try{
 
 const data={
+
 email,
 password,
-role: "vendor"
+role
+
 }
 
 const res=await loginUser(data)
 
-console.log("Logged in vendor:", res.data.user)
+console.log("Logged in user:", res.data.user)
+console.log("Role:", res.data.user.role)
 
+const userRole = res.data.user.role
+
+if(userRole === "admin"){
+localStorage.setItem("token", res.data.accessToken)
+localStorage.setItem("user", JSON.stringify(res.data.user))
+navigate("/dashboard", { replace:true })
+}
+else if(userRole === "vendor"){
 localStorage.setItem("vendorToken", res.data.accessToken)
 localStorage.setItem("vendorUser", JSON.stringify(res.data.user))
-
 navigate("/vendor/dashboard", { replace:true })
+}
+else if(userRole === "customer"){
+localStorage.setItem("token", res.data.accessToken)
+localStorage.setItem("user", JSON.stringify(res.data.user))
+navigate("/user/dashboard", { replace:true })
+}
 
 }
+
 catch(err){
-setError(err.response?.data?.message || "Login Failed")
+
+setError(
+
+err.response?.data?.message
+
+||
+
+"Login Failed"
+
+)
+
 }
+
 finally{
+
 setLoading(false)
+
 }
 
 }
@@ -245,6 +281,20 @@ Sign in to access your panel
 </p>
 
 <form onSubmit={handleLogin}>
+
+<div className="mb-5">
+  <select
+    value={role}
+    onChange={(e)=>setRole(e.target.value)}
+    className="w-full h-16 rounded-2xl bg-slate-100 px-6 text-slate-700 outline-none"
+  >
+    {roleOptions.map((option)=>(
+      <option key={option.value} value={option.value}>
+        {option.label}
+      </option>
+    ))}
+  </select>
+</div>
 
 
 <InputField

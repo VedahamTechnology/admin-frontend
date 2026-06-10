@@ -83,7 +83,7 @@ export default function VendorSidebar() {
 
   const logout = () => {
     localStorage.removeItem("vendorToken");
-    navigate("/vendor/login");
+    navigate("/");
   };
 
   return (
