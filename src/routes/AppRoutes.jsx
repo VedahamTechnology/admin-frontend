@@ -40,6 +40,7 @@ import VendorAvailability from "../modules/vendor/pages/VendorAvailability";
 import VendorSchedule     from "../modules/vendor/pages/VendorSchedule";
 import VendorNotifications from "../modules/vendor/pages/VendorNotifications";
 import VendorSettings      from "../modules/vendor/pages/VendorSettings";
+import VendorServices      from "../modules/vendor/pages/VendorServices";
 
 function AppRoutes() {
   return (
@@ -83,6 +84,7 @@ function AppRoutes() {
         <Route path="/vendor/profile"       element={<VendorProfile />} />
         <Route path="/user/dashboard"       element={<UserDashboard />} />
         <Route path="/vendor/workers"       element={<VendorWorkers />} />
+        <Route path="/vendor/services"      element={<VendorServices />} />
         <Route path="/vendor/availability"  element={<VendorAvailability />} />
         <Route path="/vendor/schedule"      element={<VendorSchedule />} />
         <Route path="/vendor/notifications" element={<VendorNotifications />} />

@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import type { Worker } from "../types/vendor";
+import { createWorker } from "../services/workerService";
 
-const ALL_SKILLS = [
-  "Electrical Repair", "AC Service", "Fan Installation",
-  "Wiring", "MCB Replacement", "Plumbing", "Carpentry",
-];
+
 
 interface Props {
   worker?: Worker;
@@ -16,33 +14,93 @@ interface Props {
 export default function WorkerModal({ worker, onSave, onClose }: Props) {
   const isEdit = Boolean(worker);
 
-  const [form, setForm] = useState({
-    name:         worker?.name         ?? "",
-    phone:        worker?.phone        ?? "",
-    email:        worker?.email        ?? "",
-    skills:       worker?.skills       ?? [] as string[],
-    status:       worker?.status       ?? "active" as Worker["status"],
-    availability: worker?.availability ?? "available" as Worker["availability"],
-    assignedJobs:  worker?.assignedJobs  ?? 0,
-    completedJobs: worker?.completedJobs ?? 0,
-    rating:        worker?.rating        ?? 4.5,
-    joinedDate:    worker?.joinedDate    ?? new Date().toISOString().slice(0, 10),
-  });
+const [form, setForm] = useState({
+  firstName: "",
+  lastName: "",
 
-  const toggleSkill = (skill: string) => {
-    setForm((prev) => ({
-      ...prev,
-      skills: prev.skills.includes(skill)
-        ? prev.skills.filter((s) => s !== skill)
-        : [...prev.skills, skill],
-    }));
-  };
+  email: "",
+  phone: "",
 
-  const handleSubmit = () => {
-    if (!form.name.trim() || !form.phone.trim()) return;
-    onSave(form);
+  password: "",
+  gender: "male",
+
+  aadharNumber: "",
+  panNumber: "",
+
+  serviceCategory: "",
+
+  aadharFrontUrl: "",
+});
+
+<div className="form-field">
+  <label className="form-label form-label--required">
+    Service Category
+  </label>
+
+  <select
+    className="admin-select"
+    value={form.serviceCategory}
+    onChange={(e) =>
+      setForm({
+        ...form,
+        serviceCategory: e.target.value,
+      })
+    }
+  >
+    <option value="">Select Service</option>
+
+    <option value="Electrical Repair">
+      Electrical Repair
+    </option>
+
+    <option value="AC Service">
+      AC Service
+    </option>
+
+    <option value="Fan Installation">
+      Fan Installation
+    </option>
+
+    <option value="Wiring">
+      Wiring
+    </option>
+
+    <option value="MCB Replacement">
+      MCB Replacement
+    </option>
+
+    <option value="Plumbing">
+      Plumbing
+    </option>
+
+    <option value="Carpentry">
+      Carpentry
+    </option>
+  </select>
+</div>
+
+ const handleSubmit = async () => {
+  try {
+    const res = await createWorker({
+      firstName: form.firstName,
+      lastName: form.lastName,
+      email: form.email,
+      phone: form.phone,
+      password: form.password,
+      gender: form.gender,
+      aadharNumber: form.aadharNumber,
+      panNumber: form.panNumber,
+      serviceCategory: form.serviceCategory,
+      aadharFrontUrl: form.aadharFrontUrl,
+    });
+
+    console.log("Worker Created:", res);
+
     onClose();
-  };
+  } catch (err) {
+    console.error("Create Worker Error:", err);
+  }
+};
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -54,13 +112,23 @@ export default function WorkerModal({ worker, onSave, onClose }: Props) {
 
         <div className="modal__body">
           <div className="form-grid-2">
+
             <div className="form-field">
-              <label className="form-label form-label--required">Full Name</label>
+              <label className="form-label form-label--required">First Name</label>
               <input
                 className="admin-input"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                placeholder="e.g. Rohit Kumar"
+                value={form.firstName}
+                onChange={(e) => setForm({ ...form, firstName: e.target.value })}
+                placeholder="e.g. Rohit"
+              />
+            </div>
+            <div className="form-field">
+              <label className="form-label form-label--required">Last Name</label>
+              <input
+                className="admin-input"
+                value={form.lastName}
+                onChange={(e) => setForm({ ...form, lastName: e.target.value })}
+                placeholder="e.g. Kumar"
               />
             </div>
             <div className="form-field">
@@ -73,6 +141,59 @@ export default function WorkerModal({ worker, onSave, onClose }: Props) {
               />
             </div>
             <div className="form-field">
+              <label className="form-label form-label--required">Password</label>
+              <input
+                type="password"
+                className="admin-input"
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                placeholder="Enter password"
+              />
+            </div>
+
+            <div className="form-field">
+              <label className="form-label form-label--required">Gender</label>
+              <select
+                className="admin-select"
+                value={form.gender}
+                onChange={(e) => setForm({ ...form, gender: e.target.value })}
+              >
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div className="form-field">
+              <label className="form-label form-label--required">Aadhar Number</label>
+              <input
+                className="admin-input"
+                value={form.aadharNumber}
+                onChange={(e) => setForm({ ...form, aadharNumber: e.target.value })}
+                placeholder="12 digit Aadhar Number"
+              />
+            </div>
+
+            <div className="form-field">
+              <label className="form-label form-label--required">PAN Number</label>
+              <input
+                className="admin-input"
+                value={form.panNumber}
+                onChange={(e) => setForm({ ...form, panNumber: e.target.value })}
+                placeholder="ABCDE1234F"
+              />
+            </div>
+
+            <div className="form-field">
+              <label className="form-label">Aadhar Front URL</label>
+              <input
+                className="admin-input"
+                value={form.aadharFrontUrl}
+                onChange={(e) => setForm({ ...form, aadharFrontUrl: e.target.value })}
+                placeholder="https://..."
+              />
+            </div>
+            <div className="form-field">
               <label className="form-label">Email</label>
               <input
                 className="admin-input"
@@ -82,39 +203,94 @@ export default function WorkerModal({ worker, onSave, onClose }: Props) {
               />
             </div>
             <div className="form-field">
-              <label className="form-label">Status</label>
+              <label className="form-label form-label--required">
+                Service Category
+              </label>
+
               <select
                 className="admin-select"
-                style={{ width: "100%" }}
-                value={form.status}
-                onChange={(e) => setForm({ ...form, status: e.target.value as Worker["status"] })}
+                value={form.serviceCategory}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    serviceCategory: e.target.value,
+                  })
+                }
               >
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-                <option value="on_leave">On Leave</option>
+                <option value="">Select Service</option>
+                <option value="Electrical Repair">Electrical Repair</option>
+                <option value="AC Service">AC Service</option>
+                <option value="Fan Installation">Fan Installation</option>
+                <option value="Wiring">Wiring</option>
+                <option value="MCB Replacement">MCB Replacement</option>
+                <option value="Plumbing">Plumbing</option>
+                <option value="Carpentry">Carpentry</option>
               </select>
+            </div>
+            <div className="form-field">
+              <label className="form-label">Status</label>
+             <select
+              className="admin-select"
+              value={form.serviceCategory}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  serviceCategory: e.target.value,
+                })
+              }
+            >
+              <option value="">Select Service</option>
+
+              <option value="Electrical Repair">
+                Electrical Repair
+              </option>
+
+              <option value="AC Service">
+                AC Service
+              </option>
+
+              <option value="Fan Installation">
+                Fan Installation
+              </option>
+
+              <option value="Wiring">
+                Wiring
+              </option>
+
+              <option value="MCB Replacement">
+                MCB Replacement
+              </option>
+            </select>
+
             </div>
           </div>
 
           <div className="form-field">
-            <label className="form-label">Skills / Services</label>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              {ALL_SKILLS.map((skill) => {
-                const selected = form.skills.includes(skill);
-                return (
-                  <button
-                    key={skill}
-                    type="button"
-                    onClick={() => toggleSkill(skill)}
-                    className={selected ? "btn btn--primary" : "btn btn--outline"}
-                    style={{ fontSize: "0.8rem", padding: "6px 14px" }}
-                  >
-                    {skill}
-                  </button>
-                );
-              })}
-            </div>
+          <label className="form-label form-label--required">
+            Service Category
+          </label>
+
+          <select
+            className="admin-select"
+            value={form.serviceCategory}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                serviceCategory: e.target.value,
+              })
+            }
+          >
+            <option value="">Select Service</option>
+            <option value="Electrical Repair">Electrical Repair</option>
+            <option value="AC Service">AC Service</option>
+            <option value="Fan Installation">Fan Installation</option>
+            <option value="Wiring">Wiring</option>
+            <option value="MCB Replacement">MCB Replacement</option>
+            <option value="Plumbing">Plumbing</option>
+            <option value="Carpentry">Carpentry</option>
+          </select>
           </div>
+
         </div>
 
         <div className="modal__footer">
@@ -122,8 +298,8 @@ export default function WorkerModal({ worker, onSave, onClose }: Props) {
           <button
             className="btn btn--primary"
             onClick={handleSubmit}
-            disabled={!form.name || !form.phone}
-            style={{ opacity: (!form.name || !form.phone) ? 0.5 : 1 }}
+            disabled={!form.firstName || !form.phone}
+            style={{ opacity: (!form.firstName || !form.phone) ? 0.5 : 1 }}
           >
             {isEdit ? "Save Changes" : "Add Worker"}
           </button>

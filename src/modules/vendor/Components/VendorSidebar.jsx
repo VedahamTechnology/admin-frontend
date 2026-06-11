@@ -8,71 +8,57 @@ import {
   Settings,
   User,
   LogOut,
+  ClipboardList,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useNotifications } from "../hooks/useVendor";
 
 /* ── Sidebar menu structure with section grouping ──────────── */
-const sections = [
+const menuItems = [
   {
-    label: "OVERVIEW",
-    items: [
-      {
-        name: "Dashboard",
-        path: "/vendor/dashboard",
-        icon: <LayoutDashboard size={18} />,
-      },
-    ],
+    name: "Dashboard",
+    path: "/vendor/dashboard",
+    icon: <LayoutDashboard size={20} />,
   },
   {
-    label: "OPERATIONS",
-    items: [
-      {
-        name: "Bookings",
-        path: "/vendor/bookings",
-        icon: <CalendarCheck size={18} />,
-      },
-      {
-        name: "Workers",
-        path: "/vendor/workers",
-        icon: <UserCog size={18} />,
-      },
-    ],
+    name: "Notifications",
+    path: "/vendor/notifications",
+    icon: <Bell size={20} />,
   },
   {
-    label: "PLANNING",
-    items: [
-      {
-        name: "Availability",
-        path: "/vendor/availability",
-        icon: <CalendarDays size={18} />,
-      },
-      {
-        name: "Schedule",
-        path: "/vendor/schedule",
-        icon: <Clock size={18} />,
-      },
-    ],
+    name: "Bookings",
+    path: "/vendor/bookings",
+    icon: <CalendarCheck size={20} />,
   },
   {
-    label: "ACCOUNT",
-    items: [
-      {
-        name: "Notifications",
-        path: "/vendor/notifications",
-        icon: <Bell size={18} />,
-      },
-      {
-        name: "Settings",
-        path: "/vendor/settings",
-        icon: <Settings size={18} />,
-      },
-      {
-        name: "Profile",
-        path: "/vendor/profile",
-        icon: <User size={18} />,
-      },
-    ],
+    name: "Services",
+    path: "/vendor/services",
+    icon: <ClipboardList size={20} />,
+  },
+  {
+    name: "Workers",
+    path: "/vendor/workers",
+    icon: <UserCog size={20} />,
+  },
+  {
+    name: "Availability",
+    path: "/vendor/availability",
+    icon: <CalendarDays size={20} />,
+  },
+  {
+    name: "Schedule",
+    path: "/vendor/schedule",
+    icon: <Clock size={20} />,
+  },
+  {
+    name: "Settings",
+    path: "/vendor/settings",
+    icon: <Settings size={20} />,
+  },
+  {
+    name: "Profile",
+    path: "/vendor/profile",
+    icon: <User size={20} />,
   },
 ];
 
@@ -87,59 +73,71 @@ export default function VendorSidebar() {
   };
 
   return (
-    <aside className="vendor-sidebar">
-      {/* Brand */}
-      <div className="sidebar__brand">
-        <h1 className="sidebar__brand-name">VEDAHAM</h1>
-        <p className="sidebar__brand-sub">Vendor Portal</p>
-      </div>
+  <aside className="vendor-sidebar">
+    {/* Top */}
+    <div className="vendor-sidebar__top">
+  <div className="vendor-sidebar__logo">
+    <div className="vendor-sidebar__logo-icon">
+      V
+    </div>
 
-      {/* Navigation */}
-      <nav className="vendor-sidebar__nav">
-        {sections.map((section, sectionIdx) => (
-          <div key={section.label}>
-            <p
-              className={`vendor-sidebar__section-label${
-                sectionIdx > 0 ? " vendor-sidebar__section-label--spaced" : ""
-              }`}
-            >
-              {section.label}
-            </p>
+    <div className="vendor-sidebar__brand">
+      <h3>VEDAHAM</h3>
+      <p>Vendor Portal</p>
+    </div>
+  </div>
+</div>
 
-            {section.items.map((item) => {
-              const isActive = location.pathname === item.path;
+    {/* Menu */}
+    <nav className="vendor-sidebar__nav">
+      {menuItems.map((item) => {
+        const isActive = location.pathname === item.path;
 
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`vendor-sidebar__item${
-                    isActive ? " vendor-sidebar__item--active" : ""
-                  }`}
-                >
-                  {item.icon}
+        return (
+          <Link
+            key={item.path}
+            to={item.path}
+            className={`vendor-sidebar__item ${
+              isActive ? "vendor-sidebar__item--active" : ""
+            }`}
+          >
+            <span className="vendor-sidebar__icon">
+              {item.icon}
+            </span>
 
-                  <span className="vendor-sidebar__item-label">
-                    {item.name}
-                  </span>
+            <span className="vendor-sidebar__label">
+              {item.name}
+            </span>
 
-                  {item.name === "Notifications" && unreadCount > 0 && (
-                    <span className="vendor-sidebar__badge">
-                      {unreadCount}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
-          </div>
-        ))}
-      </nav>
+            {item.name === "Notifications" && unreadCount > 0 && (
+              <span className="vendor-sidebar__badge">
+                {unreadCount}
+              </span>
+            )}
+          </Link>
+        );
+      })}
+    </nav>
 
-      {/* Logout */}
-      <button onClick={logout} className="vendor-sidebar__logout">
-        <LogOut size={18} />
-        Logout
-      </button>
-    </aside>
-  );
+    <div className="vendor-sidebar__bottom">
+
+  <div className="vendor-sidebar__profile">
+
+  </div>
+
+
+  <button
+    onClick={logout}
+    className="vendor-sidebar__logout"
+  >
+    <LogOut size={20}/>
+    <span className="vendor-sidebar__label">
+      Logout
+    </span>
+  </button>
+
+</div>
+
+  </aside>
+);
 }

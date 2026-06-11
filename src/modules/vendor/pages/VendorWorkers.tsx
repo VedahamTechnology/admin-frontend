@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, UserPlus, Edit2, Trash2, Users, Activity, Clock } from "lucide-react";
 import VendorLayout from "../Layouts/VendorLayout";
+import { getWorkers } from "../services/workerService";
 
 import {
   PageHeader,
@@ -25,6 +26,19 @@ export default function VendorWorkers() {
   const [search, setSearch]             = useState("");
   const [editingWorker, setEditingWorker] = useState<Worker | null>(null);
   const [statusFilter, setStatusFilter] = useState("all");
+
+  useEffect(() => {
+  const test = async () => {
+    try {
+      const res = await getWorkers();
+      console.log("Workers API:", res);
+    } catch (err) {
+      console.error("Workers API Error:", err);
+    }
+  };
+
+  test();
+  }, []);
 
   const filtered = workers.filter((w) => {
     const q = search.toLowerCase();
