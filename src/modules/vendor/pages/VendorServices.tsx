@@ -1,4 +1,16 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+ 
+import {
+  getVendorServices,
+  createService,
+  updateService,
+  deleteService,
+  getCategories,
+  type ApiService,
+  type ServiceCategory,
+  type ApprovalStatus,
+} from "../services/serviceService";
+ 
 import {
   Ban,
   CheckCircle,
@@ -12,10 +24,11 @@ import {
   Wrench,
   XCircle,
 } from "lucide-react";
-
+ 
 import VendorLayout from "../Layouts/VendorLayout";
 import {
   EmptyState,
+  LoadingState,
   MetricCard,
   PageHeader,
   SectionCard,
@@ -26,159 +39,176 @@ import ServiceModal, {
   type VendorService,
 } from "../Components/ServiceModal";
 import { useDisclosure } from "../hooks/useVendor";
-
-const categories = ["Electrical", "AC Services", "Plumbing", "Carpentry", "Cleaning"];
-
-const mockServices: VendorService[] = [
-  {
-    id: "VS001",
-    category: "Electrical",
-    name: "Fan Installation",
-    description: "Ceiling fan installation with wiring check and final safety testing.",
-    price: 499,
-    duration: 60,
-    status: "approved",
-  },
-  {
-    id: "VS002",
-    category: "AC Services",
-    name: "AC Repair",
-    description: "Diagnosis and repair for common split and window AC cooling issues.",
-    price: 1299,
-    duration: 120,
-    status: "pending",
-  },
-  {
-    id: "VS003",
-    category: "Plumbing",
-    name: "Pipe Repair",
-    description: "Leak inspection and repair for visible kitchen or bathroom pipelines.",
-    price: 699,
-    duration: 90,
-    status: "rejected",
-    rejectionReason:
-      "Please add clearer service inclusions and confirm whether materials are included.",
-  },
-  {
-    id: "VS004",
-    category: "Electrical",
-    name: "MCB Replacement",
-    description: "Replacement of faulty MCB with load inspection and panel testing.",
-    price: 649,
-    duration: 45,
-    status: "approved",
-  },
-];
-
-const statusLabels: Record<ServiceStatus, string> = {
+ 
+const statusLabels: Record<ApprovalStatus, string> = {
   approved: "Approved",
   pending: "Pending Approval",
   rejected: "Rejected",
 };
-
-const statusClasses: Record<ServiceStatus, string> = {
+ 
+const statusClasses: Record<ApprovalStatus, string> = {
   approved: "badge badge--success",
   pending: "badge badge--warning",
   rejected: "badge badge--danger",
 };
-
+ 
 const filterOptions = [
   { value: "all", label: "All" },
   { value: "approved", label: "Approved" },
   { value: "pending", label: "Pending" },
   { value: "rejected", label: "Rejected" },
 ] as const;
-
+ 
 type StatusFilter = (typeof filterOptions)[number]["value"];
-
+ 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat("en-IN", {
     style: "currency",
     currency: "INR",
     maximumFractionDigits: 0,
   }).format(value);
-
-function ServiceStatusBadge({ status }: { status: ServiceStatus }) {
+ 
+const getCategoryName = (category: ApiService["category"]): string =>
+  typeof category === "string" ? category : category.name;
+ 
+const getCategoryId = (category: ApiService["category"]): string =>
+  typeof category === "string" ? category : category._id;
+ 
+function ServiceStatusBadge({ status }: { status: ApprovalStatus }) {
   return <span className={statusClasses[status]}>{statusLabels[status]}</span>;
 }
-
+ 
 export default function VendorServices() {
-  const [services, setServices] = useState<VendorService[]>(mockServices);
+  const [services, setServices] = useState<ApiService[]>([]);
+  const [categories, setCategories] = useState<ServiceCategory[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
-  const [editingService, setEditingService] = useState<VendorService | null>(null);
+  const [editingService, setEditingService] = useState<ApiService | null>(null);
   const addModal = useDisclosure();
   const editModal = useDisclosure();
-
+ 
+  const loadServices = async () => {
+    try {
+      const res = await getVendorServices();
+      setServices(res.services || []);
+    } catch (err) {
+      console.error("Failed to load services:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+ 
+  const loadCategories = async () => {
+    try {
+      const res = await getCategories();
+      console.log("Categories API Response:", res);
+      setCategories(res.data || []);
+    } catch (err) {
+      console.error("Failed to load categories:", err);
+    }
+  };
+ 
+  useEffect(() => {
+    loadServices();
+    loadCategories();
+  }, []);
+ 
   const stats = useMemo(
     () => ({
       total: services.length,
-      approved: services.filter((service) => service.status === "approved").length,
-      pending: services.filter((service) => service.status === "pending").length,
-      rejected: services.filter((service) => service.status === "rejected").length,
+      approved: services.filter((service) => service.approvalStatus === "approved").length,
+      pending: services.filter((service) => service.approvalStatus === "pending").length,
+      rejected: services.filter((service) => service.approvalStatus === "rejected").length,
     }),
     [services]
   );
-
+ 
   const filteredServices = useMemo(() => {
     const query = search.trim().toLowerCase();
-
+ 
     return services.filter((service) => {
       const matchesSearch = service.name.toLowerCase().includes(query);
       const matchesStatus =
-        statusFilter === "all" || service.status === statusFilter;
-
+        statusFilter === "all" || service.approvalStatus === statusFilter;
+ 
       return matchesSearch && matchesStatus;
     });
   }, [search, services, statusFilter]);
-
-  const openEdit = (service: VendorService) => {
+ 
+  const openEdit = (service: ApiService) => {
     setEditingService(service);
     editModal.open();
   };
-
-  const handleCreate = (values: ServiceFormValues) => {
-    const newService: VendorService = {
-      ...values,
-      id: `VS${String(Date.now()).slice(-5)}`,
-      status: "pending",
-    };
-
-    setServices((current) => [newService, ...current]);
-    addModal.close();
+ 
+  const handleCreate = async (values: ServiceFormValues) => {
+    try {
+      await createService({
+        name: values.name,
+        description: values.description,
+        category: values.category,
+        basePrice: values.price,
+        estimatedDuration: values.duration,
+      });
+ 
+      await loadServices();
+      addModal.close();
+    } catch (err) {
+      console.error("Failed to create service:", err);
+    }
   };
-
-  const handleUpdate = (values: ServiceFormValues) => {
+ 
+  const handleUpdate = async (values: ServiceFormValues) => {
     if (!editingService) return;
-
-    setServices((current) =>
-      current.map((service) =>
-        service.id === editingService.id
-          ? {
-              ...service,
-              ...values,
-              status: "pending",
-              rejectionReason: undefined,
-            }
-          : service
-      )
-    );
+ 
+    try {
+      await updateService(editingService._id, {
+        name: values.name,
+        description: values.description,
+        basePrice: values.price,
+        estimatedDuration: values.duration,
+      });
+ 
+      await loadServices();
+    } catch (err) {
+      console.error("Failed to update service:", err);
+    }
+ 
     editModal.close();
     setEditingService(null);
   };
-
-  const handleDelete = (serviceId: string) => {
-    setServices((current) => current.filter((service) => service.id !== serviceId));
+ 
+  const handleDelete = async (serviceId: string) => {
+    try {
+      await deleteService(serviceId);
+      await loadServices();
+    } catch (err) {
+      console.error("Failed to delete service:", err);
+    }
   };
-
-  const handleDisable = (service: VendorService) => {
+ 
+  const handleDisable = (service: ApiService) => {
     window.alert(`${service.name} would be disabled once backend integration is ready.`);
   };
-
-  const handleViewRejection = (service: VendorService) => {
+ 
+  const handleViewRejection = (service: ApiService) => {
     window.alert(service.rejectionReason || "No rejection reason provided.");
   };
-
+ 
+  if (loading) {
+    return (
+      <VendorLayout>
+        <div className="page-shell">
+          <PageHeader
+            title="Services"
+            description="Manage all services offered by your business."
+          />
+          <LoadingState />
+        </div>
+      </VendorLayout>
+    );
+  }
+ 
   return (
     <VendorLayout>
       <div className="page-shell">
@@ -191,7 +221,7 @@ export default function VendorServices() {
             </button>
           }
         />
-
+ 
         <div className="metric-grid metric-grid--4">
           <MetricCard
             label="Total Services"
@@ -218,7 +248,7 @@ export default function VendorServices() {
             accent="accent-danger"
           />
         </div>
-
+ 
         <SectionCard title="All Services">
           <div className="table-toolbar service-toolbar">
             <div className="search-wrapper">
@@ -230,7 +260,7 @@ export default function VendorServices() {
                 placeholder="Search by service name..."
               />
             </div>
-
+ 
             <div className="service-filter-group" aria-label="Filter services by status">
               {filterOptions.map((option) => (
                 <button
@@ -246,7 +276,7 @@ export default function VendorServices() {
               ))}
             </div>
           </div>
-
+ 
           {services.length === 0 ? (
             <EmptyState
               title="No services created yet"
@@ -278,22 +308,22 @@ export default function VendorServices() {
                 </thead>
                 <tbody>
                   {filteredServices.map((service) => (
-                    <tr key={service.id}>
+                    <tr key={service._id}>
                       <td>
                         <p className="admin-table__cell-primary">{service.name}</p>
                         <p className="admin-table__cell-sub">{service.description}</p>
                       </td>
-                      <td>{service.category}</td>
-                      <td>{formatCurrency(service.price)}</td>
-                      <td>{service.duration} mins</td>
+                      <td>{getCategoryName(service.category)}</td>
+                      <td>{formatCurrency(service.basePrice)}</td>
+                      <td>{service.estimatedDuration} mins</td>
                       <td>
-                        <ServiceStatusBadge status={service.status} />
+                        <ServiceStatusBadge status={service.approvalStatus} />
                       </td>
                       <td>
                         <ServiceActions
                           service={service}
                           onEdit={() => openEdit(service)}
-                          onDelete={() => handleDelete(service.id)}
+                          onDelete={() => handleDelete(service._id)}
                           onDisable={() => handleDisable(service)}
                           onViewRejection={() => handleViewRejection(service)}
                         />
@@ -306,19 +336,30 @@ export default function VendorServices() {
           )}
         </SectionCard>
       </div>
-
+ 
       {addModal.isOpen && (
         <ServiceModal
-          categories={categories}
+          categories={categories.map((cat) => ({ label: cat.name, value: cat._id }))}
           onClose={addModal.close}
           onSubmit={handleCreate}
         />
       )}
-
+ 
       {editModal.isOpen && editingService && (
         <ServiceModal
-          service={editingService}
-          categories={categories}
+          service={
+            {
+              id: editingService._id,
+              name: editingService.name,
+              description: editingService.description,
+              category: getCategoryId(editingService.category),
+              price: editingService.basePrice,
+              duration: editingService.estimatedDuration,
+              status: editingService.approvalStatus as ServiceStatus,
+              rejectionReason: editingService.rejectionReason,
+            } as VendorService
+          }
+          categories={categories.map((cat) => ({ label: cat.name, value: cat._id }))}
           onClose={() => {
             editModal.close();
             setEditingService(null);
@@ -329,7 +370,7 @@ export default function VendorServices() {
     </VendorLayout>
   );
 }
-
+ 
 function ServiceActions({
   service,
   onEdit,
@@ -337,13 +378,13 @@ function ServiceActions({
   onDisable,
   onViewRejection,
 }: {
-  service: VendorService;
+  service: ApiService;
   onEdit: () => void;
   onDelete: () => void;
   onDisable: () => void;
   onViewRejection: () => void;
 }) {
-  if (service.status === "approved") {
+  if (service.approvalStatus === "approved") {
     return (
       <div className="service-actions">
         <button className="btn btn--outline service-action-btn" onClick={onEdit}>
@@ -355,8 +396,8 @@ function ServiceActions({
       </div>
     );
   }
-
-  if (service.status === "pending") {
+ 
+  if (service.approvalStatus === "pending") {
     return (
       <div className="service-actions">
         <button className="btn btn--outline service-action-btn" onClick={onEdit}>
@@ -368,7 +409,7 @@ function ServiceActions({
       </div>
     );
   }
-
+ 
   return (
     <div className="service-actions">
       <button className="btn btn--outline service-action-btn" onClick={onViewRejection}>

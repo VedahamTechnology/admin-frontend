@@ -9,7 +9,8 @@ export type BookingStatus =
   | "completed"
   | "cancelled";
 
-export type WorkerStatus = "active" | "inactive" | "on_leave";
+export type WorkerStatus = "pending" | "approved" | "rejected";
+export type WorkerGender = "male" | "female" | "other";
 
 export type SlotStatus = "available" | "blocked" | "booked";
 
@@ -41,20 +42,100 @@ export interface ServiceItem {
 }
 
 // ── Worker ───────────────────────────────────────────────────
-export interface Worker {
-  id: string;
+export interface ServiceCategory {
+  _id: string;
+  categoryId?: string;
   name: string;
+  slug?: string;
+  image?: string;
+  description?: string;
+  totalServices?: number;
+  avgRating?: number;
+}
+
+export interface WorkerDocument {
+  url?: string;
+  isVerified?: boolean;
+}
+
+export interface WorkerProfile {
+  aadharNumber?: string;
+  panNumber?: string;
+  serviceCategory?: string | ServiceCategory;
+  verificationStatus: WorkerStatus;
+  rejectionReason?: string;
+  registeredOn?: string;
+  documents?: {
+    aadharFront?: WorkerDocument;
+  };
+}
+
+export interface Worker {
+  _id: string;
+  id?: string;
+  userId?: string;
+  firstName: string;
+  lastName?: string;
   phone: string;
   email: string;
-  skills: string[];
-  status: WorkerStatus;
-  assignedJobs: number;
-  completedJobs: number;
-  rating: number;
-  joinedDate: string;
-  avatar?: string;
-  availability: "available" | "busy" | "off";
+  gender?: WorkerGender;
+  role: "worker";
+  isActive?: boolean;
+  isBanned?: boolean;
+  vendorId?: string;
+  worker: WorkerProfile;
+  createdAt?: string;
+  updatedAt?: string;
 }
+
+export interface CreateWorkerPayload {
+  firstName: string;
+  lastName?: string;
+  email: string;
+  phone: string;
+  password: string;
+  gender?: WorkerGender;
+  aadharNumber?: string;
+  panNumber?: string;
+  serviceCategory?: string;
+  aadharFrontUrl?: string;
+}
+
+export interface CreateWorkerResponse {
+  success: boolean;
+  message: string;
+  worker: {
+    id: string;
+    userId?: string;
+    fullName: string;
+    status: WorkerStatus;
+  };
+}
+
+export interface WorkersResponse {
+  success: boolean;
+  count: number;
+  workers: Worker[];
+}
+
+export interface CategoriesResponse {
+  success: boolean;
+  message: string;
+  data: ServiceCategory[];
+}
+
+export const getWorkerDisplayId = (worker: Worker) =>
+  worker._id || worker.id || worker.userId || worker.email;
+
+export const getWorkerFullName = (worker: Worker) =>
+  [worker.firstName, worker.lastName].filter(Boolean).join(" ").trim() ||
+  worker.email;
+
+export const getWorkerServiceCategoryName = (worker: Worker) => {
+  const category = worker.worker?.serviceCategory;
+  if (!category) return "No category assigned";
+  return typeof category === "string" ? category : category.name;
+};
 
 // ── Booking ──────────────────────────────────────────────────
 export interface Booking {

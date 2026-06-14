@@ -38,22 +38,22 @@ export function useBookings() {
 export function useWorkers() {
   const [workers, setWorkers] = useState<Worker[]>(mockWorkers);
 
-  const addWorker = useCallback((worker: Omit<Worker, "id">) => {
+  const addWorker = useCallback((worker: Omit<Worker, "_id">) => {
     const newWorker: Worker = {
       ...worker,
-      id: `WK${String(Date.now()).slice(-4)}`,
+      _id: `WK${String(Date.now()).slice(-4)}`,
     };
     setWorkers((prev) => [newWorker, ...prev]);
   }, []);
 
   const updateWorker = useCallback((id: string, updates: Partial<Worker>) => {
     setWorkers((prev) =>
-      prev.map((w) => (w.id === id ? { ...w, ...updates } : w))
+      prev.map((w) => (w._id === id ? { ...w, ...updates } : w))
     );
   }, []);
 
   const deleteWorker = useCallback((id: string) => {
-    setWorkers((prev) => prev.filter((w) => w.id !== id));
+    setWorkers((prev) => prev.filter((w) => w._id !== id));
   }, []);
 
   return { workers, addWorker, updateWorker, deleteWorker };

@@ -31,6 +31,11 @@ import {
 } from "../constants/mockData";
 
 import { useBookings, useWorkers } from "../hooks/useVendor";
+import {
+  getWorkerDisplayId,
+  getWorkerFullName,
+  getWorkerServiceCategoryName,
+} from "../types/vendor";
 
 export default function VendorDashboard() {
   const navigate = useNavigate();
@@ -42,7 +47,9 @@ export default function VendorDashboard() {
   // Derived KPIs
   const pendingBookings = bookings.filter((b) => b.status === "pending");
   const activeJobs = bookings.filter((b) => b.status === "in_progress").length;
-  const availableWorkers = workers.filter((w) => w.availability === "available").length;
+  const approvedWorkers = workers.filter(
+    (w) => w.worker.verificationStatus === "approved"
+  ).length;
 
   const recentBookings = [...bookings]
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
@@ -91,7 +98,7 @@ export default function VendorDashboard() {
           />
           <MetricCard
             label="Workers Available"
-            value={`${availableWorkers}/${workers.length}`}
+            value={`${approvedWorkers}/${workers.length}`}
             icon={<Users size={20} />}
             accent="accent-cyan"
           />
@@ -257,17 +264,31 @@ export default function VendorDashboard() {
         >
           <div className="dashboard-workers-grid">
             {workers.slice(0, 5).map((w) => (
-              <div key={w.id} className="worker-preview">
-                <WorkerAvatar name={w.name} />
+              <div key={getWorkerDisplayId(w)} className="worker-preview">
+                <WorkerAvatar name={getWorkerFullName(w)} />
+
                 <div>
-                  <p className="worker-preview__name">{w.name}</p>
-                  <p className="worker-preview__skill">{w.skills[0]}</p>
+                  <p className="worker-preview__name">
+                    {getWorkerFullName(w)}
+                  </p>
+
+                  <p className="worker-preview__skill">
+                    {getWorkerServiceCategoryName(w)}
+                  </p>
+
                   <p className="worker-preview__meta">
-                    <span style={{ color: "var(--color-success)", fontWeight: 600 }}>
-                      {w.assignedJobs} active
-                    </span>
-                    <span style={{ color: "var(--color-text-muted)", marginLeft: 6 }}>
-                      ⭐ {w.rating}
+                    <span
+                      style={{
+                        color:
+                          w.worker.verificationStatus === "approved"
+                            ? "var(--color-success)"
+                            : w.worker.verificationStatus === "pending"
+                            ? "orange"
+                            : "red",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {w.worker.verificationStatus}
                     </span>
                   </p>
                 </div>

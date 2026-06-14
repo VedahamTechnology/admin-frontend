@@ -35,14 +35,14 @@ export function BookingStatusBadge({ status }: { status: BookingStatus }) {
 }
 
 const workerVariants: Record<WorkerStatus, string> = {
-  active:   "badge badge--success",
-  inactive: "badge badge--danger",
-  on_leave: "badge badge--warning",
+  pending: "badge badge--warning",
+  approved: "badge badge--success",
+  rejected: "badge badge--danger",
 };
 const workerLabels: Record<WorkerStatus, string> = {
-  active:   "Active",
-  inactive: "Inactive",
-  on_leave: "On Leave",
+  pending: "Pending",
+  approved: "Approved",
+  rejected: "Rejected",
 };
 
 export function WorkerStatusBadge({ status }: { status: WorkerStatus }) {
