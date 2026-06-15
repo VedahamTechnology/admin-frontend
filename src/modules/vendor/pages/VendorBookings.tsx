@@ -8,6 +8,7 @@ import {
   BookingStatusBadge,
   EmptyState,
   SectionCard,
+  LoadingState,
 } from "../Components/VendorUI";
 
 import BookingDrawer from "../Components/BookingDrawer";
@@ -28,7 +29,7 @@ const TABS: { key: Tab; label: string }[] = [
 ];
 
 export default function VendorBookings() {
-  const { bookings, updateStatus, assignWorkers } = useBookings();
+  const { bookings, loading, error, updateStatus, assignWorkers } = useBookings();
   const { workers } = useWorkers();
 
   const [activeTab, setActiveTab]         = useState<Tab>("all");
@@ -117,7 +118,13 @@ export default function VendorBookings() {
           </div>
 
           {/* Table */}
-          {filtered.length === 0 ? (
+          {loading ? (
+            <LoadingState />
+          ) : error ? (
+            <div style={{ color: "var(--color-danger)", padding: "20px 0", textAlign: "center" }}>
+              {error}
+            </div>
+          ) : filtered.length === 0 ? (
             <EmptyState
               title="No bookings found"
               description="Try adjusting your filters or search query."
