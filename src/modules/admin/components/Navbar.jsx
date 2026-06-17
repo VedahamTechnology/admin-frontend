@@ -11,7 +11,7 @@ function Navbar() {
       <div className="navbar__right">
         <Bell />
 
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div className="navbar__profile">
           <div className="navbar__avatar">A</div>
 
           <div>
@@ -24,4 +24,4 @@ function Navbar() {
   )
 }
 
-export default Navbar
+export default Navbarv
