@@ -3,17 +3,29 @@ import Navbar from "../components/Navbar"
 
 function AdminLayout({ children }) {
   return (
-    <div className="admin-shell">
+    <div className="vendor-layout">
       <Sidebar />
 
-      <div className="admin-content">
+      <div className="vendor-layout__content">
         <Navbar />
-        <div className="admin-page-body">
+      <main className="vendor-layout__main">
           {children}
-        </div>
+        </main>
       </div>
     </div>
   )
 }
 
 export default AdminLayout
+
+// <div className="vendor-layout">
+//       <VendorSidebar />
+
+//       <div className="vendor-layout__content">
+//         <VendorNavbar />
+
+//         <main className="vendor-layout__main">
+//           {children}
+//         </main>
+//       </div>
+//     </div>

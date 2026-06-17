@@ -8,6 +8,11 @@
 
 /* ===== Modern Collapsible Sidebar ===== */
 
+:root {
+  --vendor-rail-w: 84px;
+  --vendor-rail-w-expanded: 260px;
+}
+
 .vendor-sidebar {
   position: fixed;
   top: 0;
@@ -39,25 +44,22 @@
 .vendor-sidebar__logo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 
-  padding: 10px;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  padding: 0px 4px;
 }
 
-.vendor-sidebar__logo span {
+.vendor-sidebar__logo-icon {
   width: 40px;
   height: 40px;
+  min-width: 40px;
+  flex-shrink: 0;
   border-radius: 50%;
-
   background: #6b7280;
   color: white;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   font-weight: 700;
 }
 
@@ -122,22 +124,27 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .vendor-sidebar__label {
   opacity: 0;
   white-space: nowrap;
-  transition: all 0.25s ease;
+transition: opacity 0.25s ease, width 0.25s ease;
+  width: 0; overflow: hidden;
 }
 
 .vendor-sidebar:hover .vendor-sidebar__label {
   opacity: 1;
+  width: auto;
 }
+
 
 /* Badge */
 
 .vendor-sidebar__badge {
   margin-left: auto;
+  display: none;
 
   background: #ef4444;
   color: white;
@@ -154,6 +161,7 @@
   align-items: center;
   justify-content: center;
 }
+.vendor-sidebar:hover .vendor-sidebar__badge { display: flex; }
 
 /* Bottom */
 
@@ -168,6 +176,7 @@
   gap: 12px;
 
   margin-bottom: 10px;
+  padding-left: 14px;
 }
 
 .vendor-sidebar__avatar {
@@ -188,6 +197,7 @@
   opacity: 0;
   overflow: hidden;
   transition: all 0.25s ease;
+  width: auto;
 }
 
 .vendor-sidebar:hover .vendor-sidebar__profile-info {
@@ -212,7 +222,7 @@
   align-items: center;
   gap: 14px;
 
-  padding: 12px;
+  padding: 12px 14px;
 
   border: none;
   border-radius: 12px;
@@ -222,6 +232,7 @@
 
   cursor: pointer;
 }
+
 
 .vendor-sidebar__logout:hover {
   background: #fef2f2;
@@ -240,7 +251,7 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
-  margin-left: var(--sidebar-width);
+ margin-left: var(--vendor-rail-w);
 }
 
 .vendor-layout__main {
@@ -1542,5 +1553,112 @@
 @media (max-width: 1280px) {
   .page-shell {
     gap: 24px;
+  }
+}
+
+/* ── Sidebar: Mobile / Hamburger Drawer ──────────────────── */
+
+.vendor-sidebar__mobile-toggle {
+  display: none;
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 120;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+  color: #111827;
+  cursor: pointer;
+}
+
+.vendor-sidebar__mobile-close {
+  display: none;
+}
+
+.vendor-sidebar__backdrop {
+  display: none;
+}
+
+.vendor-sidebar__dot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #ef4444;
+  transition: opacity 0.2s ease;
+}
+
+.vendor-sidebar:hover .vendor-sidebar__dot {
+  opacity: 0;
+}
+
+@media (max-width: 768px) {
+  .vendor-sidebar {
+    width: var(--vendor-rail-w-expanded);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 110;
+  }
+
+  .vendor-sidebar:hover {
+    width: var(--vendor-rail-w-expanded);
+  }
+
+  .vendor-sidebar--open {
+    transform: translateX(0);
+  }
+
+  .vendor-sidebar--open .vendor-sidebar__label,
+  .vendor-sidebar--open .vendor-sidebar__brand,
+  .vendor-sidebar--open .vendor-sidebar__profile-info {
+    opacity: 1;
+    width: auto;
+  }
+
+  .vendor-sidebar--open .vendor-sidebar__badge {
+    display: flex;
+  }
+
+  .vendor-sidebar--open .vendor-sidebar__dot {
+    opacity: 0;
+  }
+
+  .vendor-sidebar__mobile-toggle {
+    display: flex;
+  }
+
+  .vendor-sidebar__mobile-close {
+    display: flex;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    color: #6b7280;
+    cursor: pointer;
+    z-index: 2;
+  }
+
+  .vendor-sidebar__backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    z-index: 105;
+  }
+
+  .vendor-layout__content,
+  .admin-content {
+    margin-left: 0 !important;
   }
 }

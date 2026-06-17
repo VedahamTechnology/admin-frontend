@@ -41,8 +41,7 @@ export default function VendorSidebar() {
     {
       label: "Notifications",
       path: "/vendor/notifications",
-      icon: <Bell size={20} />,
-      badge: unreadCount,
+      icon: <Bell size={20} />
     },
     {
       label: "Bookings",

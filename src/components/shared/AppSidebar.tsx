@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { LogOut } from "lucide-react";
+import { LogOut, Menu, X } from "lucide-react";
 import "../../modules/vendor/styles/vendor.css";
 
 export interface SidebarItem {
@@ -31,91 +31,110 @@ export default function AppSidebar({
   profileImage,
   onLogout,
 }: AppSidebarProps) {
+  const [isOpen, setIsOpen] = useState(false);
   const logoIcon = title ? title.charAt(0).toUpperCase() : "";
 
-  return (
-    <aside className="vendor-sidebar">
-      {/* Top logo & brand */}
-      <div className="vendor-sidebar__top">
-        <div className="vendor-sidebar__logo">
-          <div className="vendor-sidebar__logo-icon">
-            {logoIcon}
-          </div>
+  const closeMobile = () => setIsOpen(false);
 
-          <div className="vendor-sidebar__brand">
-            <h3>{title}</h3>
-            <p>{subtitle}</p>
+  // Prevent background scroll while the mobile drawer is open
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
+  return (
+    <>
+      {!isOpen && (
+        <button
+          type="button"
+          className="vendor-sidebar__mobile-toggle"
+          onClick={() => setIsOpen(true)}
+          aria-label="Open menu"
+        >
+          <Menu size={20} />
+        </button>
+      )}
+
+      {isOpen && (
+        <div
+          className="vendor-sidebar__backdrop"
+          aria-hidden="true"
+          onClick={closeMobile}
+        />
+      )}
+
+      <aside className={`vendor-sidebar ${isOpen ? "vendor-sidebar--open" : ""}`}>
+        <button
+          type="button"
+          className="vendor-sidebar__mobile-close"
+          onClick={closeMobile}
+          aria-label="Close menu"
+        >
+          <X size={18} />
+        </button>
+
+        {/* Top logo & brand */}
+        <div className="vendor-sidebar__top">
+          <div className="vendor-sidebar__logo">
+            <div className="vendor-sidebar__logo-icon">{logoIcon}</div>
+
+            <div className="vendor-sidebar__brand">
+              <h3>{title}</h3>
+              <p>{subtitle}</p>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Menu items */}
-      <nav className="vendor-sidebar__nav" style={{ overflowY: "auto", scrollbarWidth: "none" }}>
-        {items.map((item) => {
-          // Check if active: exact match or hash match or subpath match
-          const isActive = 
-            activePath === item.path || 
-            activePath.startsWith(item.path + "#") || 
-            (item.path !== "/" && item.path !== "/user/dashboard" && activePath.startsWith(item.path + "/"));
-
-          return (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`vendor-sidebar__item ${
-                isActive ? "vendor-sidebar__item--active" : ""
-              }`}
-            >
-              <span className="vendor-sidebar__icon">
-                {item.icon}
-              </span>
-
-              <span className="vendor-sidebar__label">
-                {item.label}
-              </span>
-
-              {item.badge !== undefined && item.badge > 0 && (
-                <span className="vendor-sidebar__badge">
-                  {item.badge}
-                </span>
-              )}
-            </Link>
-          );
-        })}
-      </nav>
-
-      {/* Profile & Logout at bottom */}
-      <div className="vendor-sidebar__bottom">
-        {profileName && (
-          <div className="vendor-sidebar__profile">
-            <div className="vendor-sidebar__avatar">
-              {profileImage ? (
-                <img
-                  src={profileImage}
-                  alt={profileName}
-                  style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }}
-                />
-              ) : (
-                profileName.charAt(0).toUpperCase()
-              )}
-            </div>
-            <div className="vendor-sidebar__profile-info">
-              <h4>{profileName}</h4>
-              {profileEmail && <p>{profileEmail}</p>}
-            </div>
-          </div>
-        )}
-
-        <button
-          onClick={onLogout}
-          className="vendor-sidebar__logout"
+        {/* Menu items */}
+        <nav
+          className="vendor-sidebar__nav"
+          style={{ overflowY: "auto", scrollbarWidth: "none" }}
         >
-          <LogOut size={20} />
-          <span className="vendor-sidebar__label">
-            Logout
-          </span>
-        </button>
-      </div>
-    </aside>
+          {items.map((item) => {
+            const isActive =
+              activePath === item.path ||
+              activePath.startsWith(item.path + "#") ||
+              (item.path !== "/" &&
+                item.path !== "/user/dashboard" &&
+                activePath.startsWith(item.path + "/"));
+
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                onClick={closeMobile}
+                className={`vendor-sidebar__item ${
+                  isActive ? "vendor-sidebar__item--active" : ""
+                }`}
+              >
+                <span className="vendor-sidebar__icon">
+                  {item.icon}
+                  {item.badge !== undefined && item.badge > 0 && (
+                    <span className="vendor-sidebar__dot" />
+                  )}
+                </span>
+
+                <span className="vendor-sidebar__label">{item.label}</span>
+
+                {item.badge !== undefined && item.badge > 0 && (
+                  <span className="vendor-sidebar__badge">{item.badge}</span>
+                )}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Profile & Logout at bottom */}
+        <div className="vendor-sidebar__bottom">
+
+          <button onClick={onLogout} className="vendor-sidebar__logout">
+            <LogOut  />
+            <span className="vendor-sidebar__label">Logout</span>
+          </button>
+        </div>
+      </aside>
+    </>
   );
 }
