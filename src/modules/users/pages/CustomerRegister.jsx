@@ -1,37 +1,25 @@
 import { useEffect, useRef, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { FaEnvelope, FaLock, FaPhone, FaUser, FaBuilding } from "react-icons/fa"
 import { HiOutlineChartBar, HiEye, HiEyeOff } from "react-icons/hi"
 import { FiUsers } from "react-icons/fi"
 import { BsShieldCheck } from "react-icons/bs"
 import InputField from "../../../components/InputField"
 import Button from "../../../components/Button"
-import { registerCustomer, registerVendor } from "../../../services/authService"
+import { registerCustomer } from "../../../services/authService"
+import { FaEnvelope, FaLock, FaPhone, FaUser } from "react-icons/fa"
 
-
-function Register() {
+function CustomerRegister() {
   const navigate = useNavigate()
   const redirectTimerRef = useRef(null)
 
-  const [role, setRole] = useState("customer")
+  const role = "customer"
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [email, setEmail] = useState("")
   const [phone, setPhone] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
-  const [businessName, setBusinessName] = useState("")
-  const [ownerName, setOwnerName] = useState("")
-  const [experience, setExperience] = useState("")
-  const [skills, setSkills] = useState("")
-  const [serviceAreas, setServiceAreas] = useState("")
 
-  const [aadharNumber, setAadharNumber] = useState("")
-  const [panNumber, setPanNumber] = useState("")
-
-  const [aadharFront, setAadharFront] = useState("")
-  const [aadharBack, setAadharBack] = useState("")
-  const [panCard, setPanCard] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -57,28 +45,6 @@ function Register() {
     if (!password.trim()) nextErrors.password = "Password is required"
     if (!confirmPassword.trim()) nextErrors.confirmPassword = "Confirm password is required"
     if (password && confirmPassword && password !== confirmPassword) nextErrors.confirmPassword = "Passwords do not match"
-    if (role === "vendor") {
-  if (!businessName.trim())
-    nextErrors.businessName = "Business name is required"
-
-  if (!ownerName.trim())
-    nextErrors.ownerName = "Owner name is required"
-
-  if (!aadharNumber.trim())
-    nextErrors.aadharNumber = "Aadhaar number is required"
-
-  if (!panNumber.trim())
-    nextErrors.panNumber = "PAN number is required"
-
-  if (!aadharFront.trim())
-    nextErrors.aadharFront = "Aadhaar front URL is required"
-
-  if (!aadharBack.trim())
-    nextErrors.aadharBack = "Aadhaar back URL is required"
-
-  if (!panCard.trim())
-    nextErrors.panCard = "PAN card URL is required"
-} 
 
     return nextErrors
   }
@@ -103,35 +69,12 @@ function Register() {
       password,
     }
 
-   if (role === "vendor") {
-  payload.businessName = businessName.trim()
-  payload.ownerName = ownerName.trim()
-
-  payload.experience = Number(experience || 0)
-
-  payload.skills = skills
-    .split(",")
-    .map((item) => item.trim())
-    .filter(Boolean)
-
-  payload.serviceAreas = serviceAreas
-    .split(",")
-    .map((item) => item.trim())
-    .filter(Boolean)
-
-  payload.aadharNumber = aadharNumber.trim()
-  payload.panNumber = panNumber.trim()
-
-  payload.aadharFront = aadharFront.trim()
-  payload.aadharBack = aadharBack.trim()
-  payload.panCard = panCard.trim()
-}
+ 
 
     setLoading(true)
 
     try {
-      const request = role === "vendor" ? registerVendor : registerCustomer
-      await request(payload)
+      await registerCustomer(payload)
 
       setSuccess("Registration successful. Redirecting to sign in...")
       redirectTimerRef.current = setTimeout(() => {
@@ -146,10 +89,7 @@ function Register() {
     }
   }
 
-  const roleOptions = [
-    { value: "customer", label: "Customer" },
-    { value: "vendor", label: "Vendor" },
-  ]
+ 
 
   return (
     <div className="min-h-screen flex">
@@ -178,7 +118,7 @@ function Register() {
           </h1>
 
           <p className="mt-8 text-slate-200 text-lg max-w-md">
-            Join the platform as a customer or vendor and manage service activity from one place.
+            Join the platform as a customer and manage service activity from one place.
           </p>
 
           <div className="space-y-8 mt-14">
@@ -221,19 +161,7 @@ function Register() {
           <p className="text-center text-slate-500 mt-3 mb-10">Register to access your panel</p>
 
           <form onSubmit={handleRegister}>
-            <div className="mb-5">
-              <select
-                value={role}
-                onChange={(event) => setRole(event.target.value)}
-                className="w-full h-16 rounded-2xl bg-slate-100 px-6 text-slate-700 outline-none"
-              >
-                {roleOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+           
 
             <InputField
               icon={FaUser}
@@ -271,93 +199,8 @@ function Register() {
             />
             {errors.phone ? <p className="text-red-500 text-sm -mt-3 mb-4">{errors.phone}</p> : null}
 
-            {role === "vendor" ? (
-              <>
-                <InputField
-                  icon={FaBuilding}
-                  type="text"
-                  placeholder="Business Name"
-                  value={businessName}
-                  onChange={(event) => setBusinessName(event.target.value)}
-                />
-                {errors.businessName ? (
-                  <p className="text-red-500 text-sm -mt-3 mb-4">{errors.businessName}</p>
-                ) : null}
-              </>
-            ) : null}
-            
-            <InputField
-              icon={FaUser}
-              type="text"
-              placeholder="Owner Name"
-              value={ownerName}
-              onChange={(e) => setOwnerName(e.target.value)}
-            />
-
-            <InputField
-              icon={FaBuilding}
-              type="number"
-              placeholder="Experience (Years)"
-              value={experience}
-              onChange={(e) => setExperience(e.target.value)}
-            />
-
-            <InputField
-              icon={FaBuilding}
-              type="text"
-              placeholder="Skills (comma separated)"
-              value={skills}
-              onChange={(e) => setSkills(e.target.value)}
-            />
-
-            <InputField
-              icon={FaBuilding}
-              type="text"
-              placeholder="Service Areas (comma separated)"
-              value={serviceAreas}
-              onChange={(e) => setServiceAreas(e.target.value)}
-            />
-
-            <InputField
-              icon={FaUser}
-              type="text"
-              placeholder="Aadhaar Number"
-              value={aadharNumber}
-              onChange={(e) => setAadharNumber(e.target.value)}
-            />
-
-            <InputField
-              icon={FaUser}
-              type="text"
-              placeholder="PAN Number"
-              value={panNumber}
-              onChange={(e) => setPanNumber(e.target.value)}
-            />
-
-            <InputField
-              icon={FaUser}
-              type="text"
-              placeholder="Aadhaar Front URL"
-              value={aadharFront}
-              onChange={(e) => setAadharFront(e.target.value)}
-            />
-
-            <InputField
-              icon={FaUser}
-              type="text"
-              placeholder="Aadhaar Back URL"
-              value={aadharBack}
-              onChange={(e) => setAadharBack(e.target.value)}
-            />
-
-            <InputField
-              icon={FaUser}
-              type="text"
-              placeholder="PAN Card URL"
-              value={panCard}
-              onChange={(e) => setPanCard(e.target.value)}
-            />
-
+           
+           
             <InputField
               icon={FaLock}
               type={showPassword ? "text" : "password"}
@@ -414,4 +257,4 @@ function Register() {
   )
 }
 
-export default Register
+export default CustomerRegister

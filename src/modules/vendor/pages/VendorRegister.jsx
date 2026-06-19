@@ -6,14 +6,14 @@ import { FiUsers } from "react-icons/fi"
 import { BsShieldCheck } from "react-icons/bs"
 import InputField from "../../../components/InputField"
 import Button from "../../../components/Button"
-import { registerCustomer, registerVendor } from "../../../services/authService"
+import { registerVendor } from "../../../services/authService"
 
 
-function Register() {
+function VendorRegister() {
   const navigate = useNavigate()
   const redirectTimerRef = useRef(null)
 
-  const [role, setRole] = useState("customer")
+  const role = "vendor"
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [email, setEmail] = useState("")
@@ -130,8 +130,7 @@ function Register() {
     setLoading(true)
 
     try {
-      const request = role === "vendor" ? registerVendor : registerCustomer
-      await request(payload)
+        await registerVendor(payload)
 
       setSuccess("Registration successful. Redirecting to sign in...")
       redirectTimerRef.current = setTimeout(() => {
@@ -146,10 +145,7 @@ function Register() {
     }
   }
 
-  const roleOptions = [
-    { value: "customer", label: "Customer" },
-    { value: "vendor", label: "Vendor" },
-  ]
+  
 
   return (
     <div className="min-h-screen flex">
@@ -178,7 +174,7 @@ function Register() {
           </h1>
 
           <p className="mt-8 text-slate-200 text-lg max-w-md">
-            Join the platform as a customer or vendor and manage service activity from one place.
+            Join the platform as a vendor and manage service activity from one place.
           </p>
 
           <div className="space-y-8 mt-14">
@@ -217,23 +213,11 @@ function Register() {
 
       <div className="flex-1 bg-slate-100 flex items-center justify-center p-8">
         <div className="bg-white rounded-3xl shadow-xl p-12 w-full max-w-lg">
-          <h1 className="text-5xl font-bold text-center text-slate-900">Create Account</h1>
-          <p className="text-center text-slate-500 mt-3 mb-10">Register to access your panel</p>
+          <h1 className="text-5xl font-bold text-center text-slate-900">Vendor Registration</h1>
+          <p className="text-center text-slate-500 mt-3 mb-10">Register your business and get approved</p>
 
           <form onSubmit={handleRegister}>
-            <div className="mb-5">
-              <select
-                value={role}
-                onChange={(event) => setRole(event.target.value)}
-                className="w-full h-16 rounded-2xl bg-slate-100 px-6 text-slate-700 outline-none"
-              >
-                {roleOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+            
 
             <InputField
               icon={FaUser}
@@ -414,4 +398,4 @@ function Register() {
   )
 }
 
-export default Register
+export default VendorRegister

@@ -1,10 +1,9 @@
-import { Bell } from "lucide-react";
-import { Link } from "react-router-dom";
+
 import { mockVendorProfile } from "../constants/mockData";
-import { useNotifications } from "../hooks/useVendor";
+import NotificationDropdown from "../../../components/shared/NotificationDropdown";
 
 export default function VendorNavbar() {
-  const { unreadCount } = useNotifications();
+  
   const vendor = mockVendorProfile;
 
   const initials = vendor.ownerName
@@ -18,17 +17,7 @@ export default function VendorNavbar() {
       <input placeholder="Search bookings, workers…" className="navbar__search" />
 
       <div className="navbar__right">
-        <Link
-          to="/vendor/notifications"
-          className="navbar__notif-link"
-        >
-          <Bell size={20} />
-          {unreadCount > 0 && (
-            <span className="navbar-notif-badge">
-              {unreadCount}
-            </span>
-          )}
-        </Link>
+        <NotificationDropdown />
 
         <div className="navbar__user">
           <div className="navbar__avatar">{initials}</div>

@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 
 import Login              from "../modules/admin/pages/Login"
-import Register           from "../modules/admin/pages/Register"
 import Dashboard          from "../modules/admin/pages/Dashboard"
 import Users              from "../modules/admin/pages/Users"
 import Providers          from "../modules/admin/pages/Providers"
@@ -41,13 +40,14 @@ import VendorSchedule     from "../modules/vendor/pages/VendorSchedule";
 import VendorNotifications from "../modules/vendor/pages/VendorNotifications";
 import VendorSettings      from "../modules/vendor/pages/VendorSettings";
 import VendorServices      from "../modules/vendor/pages/VendorServices";
+import CustomerRegister from "../modules/users/pages/CustomerRegister";
+import VendorRegister from "../modules/vendor/pages/VendorRegister";
 
 function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/"                     element={<Login />} />
-        <Route path="/register"            element={<Register />} />
         <Route path="/dashboard"            element={<Dashboard />} />
         <Route path="/users"                element={<Users />} />
         <Route path="/users/bookings"       element={<UserBookings />} />
@@ -90,6 +90,8 @@ function AppRoutes() {
         <Route path="/vendor/notifications" element={<VendorNotifications />} />
         <Route path="/vendor/settings"      element={<VendorSettings />} />
         <Route path="/vendor/profile"       element={<VendorProfile />} />
+        <Route path="/users/register" element={<CustomerRegister />} />
+        <Route path="/vendor/register" element={<VendorRegister />} /> 
       </Routes>
     </BrowserRouter>
   )

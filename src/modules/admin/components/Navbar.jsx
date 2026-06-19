@@ -1,4 +1,5 @@
-import { Bell } from "lucide-react"
+
+import NotificationDropdown from "../../../components/shared/NotificationDropdown";
 
 function Navbar() {
   return (
@@ -9,7 +10,7 @@ function Navbar() {
       />
 
       <div className="navbar__right">
-        <Bell />
+        <NotificationDropdown unreadCount={3} />
 
         <div className="navbar__profile">
           <div className="navbar__avatar">A</div>
@@ -24,4 +25,4 @@ function Navbar() {
   )
 }
 
-export default Navbarv
+export default Navbar;

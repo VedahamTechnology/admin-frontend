@@ -403,15 +403,17 @@ text="Sign In"
 
 />
 
-<p className="text-center text-slate-500 mt-6 text-sm">
-  Don't have an account?{" "}
-  <Link
-    to="/register"
-    className="text-cyan-600 font-semibold hover:text-cyan-700"
-  >
-    Register
-  </Link>
-</p>
+{role !== "admin" && (
+  <p className="text-center text-slate-500 mt-6 text-sm">
+    Don't have an account?{" "}
+    <Link
+      to={role === "vendor" ? "/vendor/register" : "/users/register"}
+      className="text-cyan-600 font-semibold hover:text-cyan-700"
+    >
+      Register
+    </Link>
+  </p>
+)}
 
 </form>
 
