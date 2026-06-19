@@ -20,7 +20,7 @@ import {
   bulkUpdateCategoryStatus,
 } from "../services/adminService";
 
-import CategoryModal from "../components/CategoryModal";
+import CategoryModal from "../components/Categorymodal";
 
 function Categories() {
   const [categories, setCategories] = useState([]);
