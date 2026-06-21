@@ -38,11 +38,7 @@ export default function VendorSidebar() {
       path: "/vendor/dashboard",
       icon: <LayoutDashboard size={20} />,
     },
-    {
-      label: "Notifications",
-      path: "/vendor/notifications",
-      icon: <Bell size={20} />
-    },
+    
     {
       label: "Bookings",
       path: "/vendor/bookings",

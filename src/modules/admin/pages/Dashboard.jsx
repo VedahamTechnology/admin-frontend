@@ -1,5 +1,6 @@
 import AdminLayout from "../layouts/AdminLayout"
 import { Users, CalendarCheck, Wallet, Briefcase } from "lucide-react"
+import { useEffect, useState } from "react"
 
 import StatsCard from "../components/StatsCard"
 import RevenueChart from "../components/RevenueChart"
@@ -7,36 +8,56 @@ import RecentBookings from "../components/RecentBookings"
 import ActivityPanel from "../components/ActivityPanel"
 import BookingStatus from "../components/BookingStatus"
 import WorkerPayment from "../components/WorkerPayment"
+import { getDashboardStats } from "../services/dashboardService";
 
 function Dashboard() {
   const user = JSON.parse(localStorage.getItem("user"))
 
+  const [stats, setStats] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        setLoading(true)
+        const response = await getDashboardStats()
+        setStats(response.data?.data || response.data)
+      } catch (err) {
+        setError("Failed to load dashboard statistics")
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchStats()
+  }, [])
+
   const cards = [
     {
       title: "Revenue",
-      value: "₹1,24,500",
-      change: "+12.4% this month",
+      value: `₹${stats?.revenue?.total || 0}`,
+      change: `${stats?.revenue?.bookings || 0} this month`,
       icon: <Wallet className="text-white" />,
       bg: "bg-[#031B52]",
     },
     {
       title: "Bookings",
-      value: "328",
-      change: "+18 today",
+      value: stats?.bookings?.total || 0,
+      change: `${stats?.bookings?.pending || 0} pending`,
       icon: <CalendarCheck className="text-white" />,
       bg: "bg-[#05AFC7]",
     },
     {
       title: "Customers",
-      value: "1240",
-      change: "+45 new users",
+      value: stats?.users?.total || 0,
+      change: `+${stats?.users?.new || 0} new users`,
       icon: <Users className="text-white" />,
       bg: "bg-emerald-500",
     },
     {
       title: "Providers",
-      value: "184",
-      change: "+8 approved",
+      value: stats?.vendors?.total || 0,
+      change: `${stats?.vendors?.active || 0} active`,
       icon: <Briefcase className="text-white" />,
       bg: "bg-orange-500",
     },
@@ -54,36 +75,21 @@ function Dashboard() {
             </p>
           </div>
 
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              borderRadius: "var(--radius-full)",
-              border: "1px solid var(--color-border)",
-              backgroundColor: "var(--color-bg-card)",
-              padding: "8px 16px",
-              fontSize: "0.875rem",
-              fontWeight: 500,
-              color: "var(--color-text-secondary)",
-              boxShadow: "var(--shadow-sm)",
-            }}
-          >
-            <span
-              style={{
-                width: 8,
-                height: 8,
-                borderRadius: "var(--radius-full)",
-                backgroundColor: "var(--color-success)",
-                display: "inline-block",
-              }}
-            />
-            Data updated 2 min ago
-          </div>
+         
         </div>
 
-        {/* Stats Cards */}
-        <div className="metric-grid metric-grid--4">
+        {loading ? (
+          <div style={{ padding: "3rem", textAlign: "center", color: "var(--color-text-secondary)" }}>
+            Loading dashboard data...
+          </div>
+        ) : error ? (
+          <div style={{ padding: "3rem", textAlign: "center", color: "var(--color-danger)" }}>
+            {error}
+          </div>
+        ) : (
+          <>
+            {/* Stats Cards */}
+            <div className="metric-grid metric-grid--4">
           {cards.map((card, index) => (
             <StatsCard
               key={index}
@@ -137,6 +143,7 @@ function Dashboard() {
               </span>
             </div>
             <div style={{ height: 380 }}>
+              {/* TODO: Connect RevenueChart to getRevenueTrend() API when component supports dynamic props */}
               <RevenueChart />
             </div>
           </div>
@@ -203,7 +210,9 @@ function Dashboard() {
             gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
           }}
         >
+          {/* TODO: Connect BookingStatus to getBookingStatus() API when component supports dynamic props */}
           <BookingStatus />
+          {/* TODO: Connect WorkerPayment to getWorkerPayment() API when component supports dynamic props */}
           <WorkerPayment />
         </div>
 
@@ -212,6 +221,8 @@ function Dashboard() {
 
         {/* Activity Panel */}
         <ActivityPanel />
+          </>
+        )}
       </div>
     </AdminLayout>
   )

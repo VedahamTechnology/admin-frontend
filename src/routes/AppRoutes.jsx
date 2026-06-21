@@ -37,7 +37,7 @@ import UserDashboard      from "../modules/users/pages/UserDashboard"
 import VendorWorkers      from "../modules/vendor/pages/VendorWorkers";
 import VendorAvailability from "../modules/vendor/pages/VendorAvailability";
 import VendorSchedule     from "../modules/vendor/pages/VendorSchedule";
-import VendorNotifications from "../modules/vendor/pages/VendorNotifications";
+
 import VendorSettings      from "../modules/vendor/pages/VendorSettings";
 import VendorServices      from "../modules/vendor/pages/VendorServices";
 import CustomerRegister from "../modules/users/pages/CustomerRegister";
@@ -87,7 +87,7 @@ function AppRoutes() {
         <Route path="/vendor/services"      element={<VendorServices />} />
         <Route path="/vendor/availability"  element={<VendorAvailability />} />
         <Route path="/vendor/schedule"      element={<VendorSchedule />} />
-        <Route path="/vendor/notifications" element={<VendorNotifications />} />
+
         <Route path="/vendor/settings"      element={<VendorSettings />} />
         <Route path="/vendor/profile"       element={<VendorProfile />} />
         <Route path="/users/register" element={<CustomerRegister />} />
