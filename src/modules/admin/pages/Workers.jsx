@@ -1,36 +1,87 @@
 import AdminLayout from "../layouts/AdminLayout"
-import { Search, UserCheck, UserX, Wallet } from "lucide-react"
+import { Search, UserCheck, UserX, Clock } from "lucide-react"
+import { useState, useEffect } from "react"
+import { getWorkers, approveWorker, rejectWorker } from "../services/adminService"
 
 function Workers() {
-  const workers = [
-    {
-      id: "WK001",
-      name: "Rohit Kumar",
-      service: "Electrician",
-      phone: "9876543210",
-      jobs: 42,
-      rating: "4.8",
-      status: "Active",
-    },
-    {
-      id: "WK002",
-      name: "Aman Singh",
-      service: "Plumber",
-      phone: "9812345678",
-      jobs: 29,
-      rating: "4.6",
-      status: "Busy",
-    },
-    {
-      id: "WK003",
-      name: "Deepak",
-      service: "AC Repair",
-      phone: "9988776655",
-      jobs: 12,
-      rating: "4.2",
-      status: "Inactive",
-    },
-  ]
+  const [workers, setWorkers] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [filterStatus, setFilterStatus] = useState("All Workers")
+
+  const fetchWorkers = async () => {
+    try {
+      setLoading(true)
+      const response = await getWorkers()
+      console.log("Workers API Response:", response.data)
+      
+      let fetchedWorkers = [];
+      const resData = response.data;
+      if (Array.isArray(resData)) {
+        fetchedWorkers = resData;
+      } else if (resData && Array.isArray(resData.data)) {
+        fetchedWorkers = resData.data;
+      } else if (resData && Array.isArray(resData.workers)) {
+        fetchedWorkers = resData.workers;
+      }
+      
+      setWorkers(fetchedWorkers)
+    } catch (err) {
+      setError("Failed to fetch workers")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchWorkers()
+  }, [])
+
+  const handleApprove = async (id) => {
+    try {
+      await approveWorker(id)
+      fetchWorkers()
+    } catch (err) {
+      alert("Failed to approve worker")
+    }
+  }
+
+  const handleReject = async (id) => {
+    const reason = window.prompt("Enter rejection reason:")
+    if (reason) {
+      try {
+        await rejectWorker(id, reason)
+        fetchWorkers()
+      } catch (err) {
+        alert("Failed to reject worker")
+      }
+    }
+  }
+
+  // Defensive Array Check
+  const safeWorkers = Array.isArray(workers) ? workers : []
+
+  // Metrics
+  const totalWorkers = safeWorkers.length
+  const approvedWorkers = safeWorkers.filter(w => w.worker?.verificationStatus === "approved").length
+  const pendingWorkers = safeWorkers.filter(w => w.worker?.verificationStatus === "pending").length
+  const rejectedWorkers = safeWorkers.filter(w => w.worker?.verificationStatus === "rejected").length
+
+  // Filtering
+  const filteredWorkers = safeWorkers.filter((worker) => {
+    const matchesSearch = 
+      `${worker.firstName || ''} ${worker.lastName || ''}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (worker.phone && worker.phone.includes(searchQuery)) ||
+      (worker.vendorId?.businessName && worker.vendorId.businessName.toLowerCase().includes(searchQuery.toLowerCase()))
+
+    let matchesStatus = true
+    if (filterStatus === "Approved") matchesStatus = worker.worker?.verificationStatus === "approved"
+    else if (filterStatus === "Pending") matchesStatus = worker.worker?.verificationStatus === "pending"
+    else if (filterStatus === "Rejected") matchesStatus = worker.worker?.verificationStatus === "rejected"
+
+    return matchesSearch && matchesStatus
+  })
 
   return (
     <AdminLayout>
@@ -45,22 +96,28 @@ function Workers() {
         </div>
 
         {/* Metric Cards */}
-        <div className="metric-grid metric-grid--3">
+        <div className="metric-grid metric-grid--4">
           <WorkerCard
             title="Total Workers"
-            value="184"
+            value={totalWorkers}
             icon={<UserCheck size={22} />}
             accent="accent-cyan"
           />
           <WorkerCard
-            title="Busy Workers"
-            value="52"
-            icon={<Wallet size={22} />}
-            accent="accent-orange"
+            title="Approved"
+            value={approvedWorkers}
+            icon={<UserCheck size={22} />}
+            accent="accent-success"
           />
           <WorkerCard
-            title="Inactive"
-            value="11"
+            title="Pending"
+            value={pendingWorkers}
+            icon={<Clock size={22} />}
+            accent="accent-warning"
+          />
+          <WorkerCard
+            title="Rejected"
+            value={rejectedWorkers}
             icon={<UserX size={22} />}
             accent="accent-danger"
           />
@@ -71,14 +128,23 @@ function Workers() {
           <div className="table-toolbar">
             <div className="search-wrapper">
               <Search size={18} className="search-wrapper__icon" />
-              <input placeholder="Search workers" className="admin-input" />
+              <input 
+                placeholder="Search workers" 
+                className="admin-input" 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
 
-            <select className="admin-select">
+            <select 
+              className="admin-select"
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+            >
               <option>All Workers</option>
-              <option>Active</option>
-              <option>Busy</option>
-              <option>Inactive</option>
+              <option>Pending</option>
+              <option>Approved</option>
+              <option>Rejected</option>
             </select>
           </div>
 
@@ -86,30 +152,65 @@ function Workers() {
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th>Worker</th>
-                  <th>Service</th>
+                  <th>Worker Name</th>
+                  <th>Service Category</th>
                   <th>Phone</th>
-                  <th>Jobs</th>
-                  <th>Rating</th>
+                  <th>Vendor</th>
                   <th>Status</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {workers.map((worker) => (
-                  <tr key={worker.id}>
-                    <td>
-                      <p className="admin-table__cell-primary">{worker.name}</p>
-                      <p className="admin-table__cell-sub">{worker.id}</p>
-                    </td>
-                    <td>{worker.service}</td>
-                    <td>{worker.phone}</td>
-                    <td>{worker.jobs}</td>
-                    <td>⭐ {worker.rating}</td>
-                    <td>
-                      <WorkerStatus value={worker.status} />
-                    </td>
+                {loading ? (
+                  <tr>
+                    <td colSpan="6" style={{ textAlign: "center", padding: "2rem" }}>Loading workers...</td>
                   </tr>
-                ))}
+                ) : error ? (
+                  <tr>
+                    <td colSpan="6" style={{ textAlign: "center", padding: "2rem", color: "red" }}>{error}</td>
+                  </tr>
+                ) : filteredWorkers.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" style={{ textAlign: "center", padding: "2rem" }}>No workers found.</td>
+                  </tr>
+                ) : (
+                  filteredWorkers.map((worker) => (
+                    <tr key={worker._id}>
+                      <td>
+                        <p className="admin-table__cell-primary">{worker.firstName} {worker.lastName}</p>
+                        <p className="admin-table__cell-sub">{worker._id}</p>
+                      </td>
+                      <td>{worker.worker?.serviceCategory?.name || "N/A"}</td>
+                      <td>{worker.phone}</td>
+                      <td>{worker.vendorId?.businessName || "N/A"}</td>
+                      <td>
+                        <WorkerStatus value={worker.worker?.verificationStatus || "pending"} />
+                      </td>
+                      <td>
+                        {worker.worker?.verificationStatus === "pending" ? (
+                          <div style={{ display: "flex", gap: "8px" }}>
+                            <button 
+                              onClick={() => handleApprove(worker._id)}
+                              className="btn btn--primary" 
+                              style={{ padding: "4px 8px", fontSize: "12px", minHeight: "auto", borderRadius: "var(--radius-md)" }}
+                            >
+                              Approve
+                            </button>
+                            <button 
+                              onClick={() => handleReject(worker._id)}
+                              className="btn btn--danger" 
+                              style={{ padding: "4px 8px", fontSize: "12px", minHeight: "auto", background: "var(--color-danger)", color: "white", borderRadius: "var(--radius-md)" }}
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        ) : (
+                          <span style={{ color: "var(--color-text-secondary)", fontSize: "0.875rem" }}>-</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
@@ -121,12 +222,12 @@ function Workers() {
 
 function WorkerStatus({ value }) {
   const variantMap = {
-    Active:   "badge--success",
-    Busy:     "badge--warning",
-    Inactive: "badge--danger",
+    approved: "badge--success",
+    pending: "badge--warning",
+    rejected: "badge--danger",
   }
   return (
-    <span className={`badge ${variantMap[value] || "badge--neutral"}`}>
+    <span className={`badge ${variantMap[value.toLowerCase()] || "badge--neutral"}`} style={{ textTransform: "capitalize" }}>
       {value}
     </span>
   )

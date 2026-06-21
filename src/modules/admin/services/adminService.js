@@ -164,7 +164,44 @@ return API.delete(
  
 }
  
- 
+ // WORKERS
+
+export const getWorkers = () => {
+  return API.get("/admin/workers");
+};
+
+export const getPendingWorkers = () => {
+  return API.get("/admin/workers/pending");
+};
+
+export const getApprovedWorkers = () => {
+  return API.get("/admin/workers/approved");
+};
+
+export const getRejectedWorkers = () => {
+  return API.get("/admin/workers/rejected");
+};
+
+export const approveWorker = (id) => {
+  return API.patch(`/admin/workers/${id}/approve`);
+};
+
+export const rejectWorker = (id, reason) => {
+  return API.patch(
+    `/admin/workers/${id}/reject`,
+    {
+      reason,
+    }
+  );
+};
+
+export const getWorkerById = (id) => {
+  return API.get(`/admin/workers/${id}`);
+};
+
+export const getWorkerBookings = (id) => {
+  return API.get(`/admin/workers/${id}/bookings`);
+};
  
 // SERVICES
  
