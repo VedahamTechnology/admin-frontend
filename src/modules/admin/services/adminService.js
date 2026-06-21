@@ -206,11 +206,27 @@ export const getWorkerBookings = (id) => {
 // SERVICES
  
 export const getServices=()=>{
- 
 return API.get(
- 
 "/admin/services"
- 
 )
- 
 }
+
+export const getPendingServices = () => {
+  return API.get("/admin/services/pending");
+};
+
+export const approveService = (serviceId) => {
+  return API.patch(`/admin/services/${serviceId}/approve`);
+};
+
+export const rejectService = (serviceId, reason) => {
+  return API.patch(`/admin/services/${serviceId}/reject`, { rejectionReason: reason });
+};
+
+export const deleteService = (id) => {
+  return API.delete(`/admin/services/${id}`);
+};
+
+export const getTopBookedServices = () => {
+  return API.get("/admin/services/top-booked");
+};
