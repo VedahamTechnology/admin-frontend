@@ -4,19 +4,16 @@ import {
   UserCog,
   CalendarDays,
   Clock,
-  Bell,
   Settings,
   User,
   ClipboardList,
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useNotifications } from "../hooks/useVendor";
 import AppSidebar from "../../../components/shared/AppSidebar";
 
 export default function VendorSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { unreadCount } = useNotifications();
 
   const vendorUserStr = localStorage.getItem("vendorUser");
   const vendorUser = vendorUserStr ? JSON.parse(vendorUserStr) : null;

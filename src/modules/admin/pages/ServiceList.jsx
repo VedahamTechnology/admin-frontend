@@ -30,13 +30,7 @@ const [services,setServices]=useState([])
 
 const [loading,setLoading]=useState(true)
 
-useEffect(()=>{
-
-fetchServices()
-
-},[])
-
-const fetchServices=async()=>{
+async function fetchServices(){
 
 try{
 
@@ -71,6 +65,18 @@ setLoading(false)
 }
 
 }
+
+useEffect(()=>{
+
+const timer=setTimeout(()=>{
+
+fetchServices()
+
+},0)
+
+return()=>clearTimeout(timer)
+
+},[])
 
 return(
 

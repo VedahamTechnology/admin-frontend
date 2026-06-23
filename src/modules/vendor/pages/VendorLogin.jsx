@@ -15,20 +15,11 @@ const navigate=useNavigate()
 
 const [email,setEmail]=useState("")
 const [password,setPassword]=useState("")
-const [role,setRole]=useState("admin")
 const [showPassword,setShowPassword]=useState(false)
 
 const [loading,setLoading]=useState(false)
 
 const [error,setError]=useState("")
-
-const roleOptions=[
-
-{value:"admin",label:"Admin"},
-{value:"vendor",label:"Vendor"},
-{value:"customer",label:"Customer"}
-
-]
 
 const handleLogin=async(e)=>{
 

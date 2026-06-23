@@ -21,7 +21,13 @@ export const getCategories=()=>{
 
 return API.get(
 
-"/admin/categories?isActive=all&limit=100"
+"/admin/categories",
+{
+params:{
+isActive:"all",
+limit:100
+}
+}
 
 )
 
@@ -52,7 +58,12 @@ export const searchUsers=(query)=>{
 
 return API.get(
 
-`/admin/users/search?query=${query}`
+"/admin/users/search",
+{
+params:{
+query
+}
+}
 
 )
 

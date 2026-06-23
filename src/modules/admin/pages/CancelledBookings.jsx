@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 
 import AdminLayout from "../layouts/AdminLayout"
 import { EmptyState, LoadingGrid, PageShell, SectionCard, StatusPill } from "../components/AdminPageElements"
-import { XCircle } from "lucide-react"
 
 const bookings=[
   { id:"XBK-5001", customer:"Kiran Das", worker:"No Worker Assigned", status:"Cancelled", price:"₹599" },

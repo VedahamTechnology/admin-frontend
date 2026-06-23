@@ -1,5 +1,5 @@
 import AdminLayout from "../layouts/AdminLayout"
-import { Search, Layers3, IndianRupee, CheckCircle2, Clock, XCircle } from "lucide-react"
+import { Search, Layers3, CheckCircle2, Clock, XCircle } from "lucide-react"
 import { useState, useEffect } from "react"
 import { getServices, approveService, rejectService, deleteService } from "../services/adminService"
 
@@ -11,9 +11,11 @@ function VendorServices(){
   const [filterCategory, setFilterCategory] = useState("All Categories")
   const [viewModalData, setViewModalData] = useState(null)
 
-  const fetchServices = async () => {
+  const fetchServices = async ({ showLoading = true } = {}) => {
     try {
-      setLoading(true)
+      if (showLoading) {
+        setLoading(true)
+      }
       const response = await getServices()
       console.log("Services Response:", response.data)
       
@@ -28,7 +30,7 @@ function VendorServices(){
       }
       
       setServices(fetchedServices)
-    } catch (err) {
+    } catch {
       setError("Failed to fetch services")
     } finally {
       setLoading(false)
@@ -36,7 +38,11 @@ function VendorServices(){
   }
 
   useEffect(() => {
-    fetchServices()
+    const timer = setTimeout(() => {
+      fetchServices({ showLoading: false })
+    }, 0)
+
+    return () => clearTimeout(timer)
   }, [])
 
   const handleApprove = async (id) => {

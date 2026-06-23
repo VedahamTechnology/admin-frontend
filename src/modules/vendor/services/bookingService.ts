@@ -1,15 +1,8 @@
 import axios from "axios";
 import type { Booking, Worker, BookingStatus } from "../types/vendor";
+import { getVendorRequestConfig, vendorApiBaseUrl } from "./vendorApi";
 
-const API = "http://localhost:5000/api/vendor";
-
-const getConfig = () => {
-  const token = localStorage.getItem("vendorToken");
-
-  return {
-    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-  };
-};
+const API = vendorApiBaseUrl;
 
 export const getBookingErrorMessage = (error: unknown) => {
   if (axios.isAxiosError<{ message?: string }>(error)) {
@@ -95,46 +88,46 @@ export const getBookings = async (status?: string): Promise<Booking[]> => {
   const url = status && status !== "all" 
     ? `${API}/bookings?status=${status}` 
     : `${API}/bookings`;
-  const res = await axios.get<{ success: boolean; bookings: any[] }>(url, getConfig());
+  const res = await axios.get<{ success: boolean; bookings: any[] }>(url, getVendorRequestConfig());
   return (res.data.bookings || []).map(mapBackendBookingToFrontend);
 };
 
 export const getBookingById = async (id: string): Promise<Booking> => {
-  const res = await axios.get<{ success: boolean; booking: any }>(`${API}/bookings/${id}`, getConfig());
+  const res = await axios.get<{ success: boolean; booking: any }>(`${API}/bookings/${id}`, getVendorRequestConfig());
   return mapBackendBookingToFrontend(res.data.booking);
 };
 
 export const acceptBooking = async (id: string): Promise<any> => {
-  const res = await axios.put(`${API}/bookings/${id}/accept`, {}, getConfig());
+  const res = await axios.put(`${API}/bookings/${id}/accept`, {}, getVendorRequestConfig());
   return res.data;
 };
 
 export const rejectBooking = async (id: string, reason: string): Promise<any> => {
-  const res = await axios.put(`${API}/bookings/${id}/reject`, { reason }, getConfig());
+  const res = await axios.put(`${API}/bookings/${id}/reject`, { reason }, getVendorRequestConfig());
   return res.data;
 };
 
 export const completeBooking = async (id: string): Promise<any> => {
-  const res = await axios.put(`${API}/bookings/${id}/complete`, {}, getConfig());
+  const res = await axios.put(`${API}/bookings/${id}/complete`, {}, getVendorRequestConfig());
   return res.data;
 };
 
 export const cancelBooking = async (id: string, reason: string): Promise<any> => {
-  const res = await axios.put(`${API}/bookings/${id}/cancel`, { reason }, getConfig());
+  const res = await axios.put(`${API}/bookings/${id}/cancel`, { reason }, getVendorRequestConfig());
   return res.data;
 };
 
 export const assignWorker = async (id: string, workerId: string): Promise<any> => {
-  const res = await axios.put(`${API}/bookings/${id}/assign-worker`, { workerId }, getConfig());
+  const res = await axios.put(`${API}/bookings/${id}/assign-worker`, { workerId }, getVendorRequestConfig());
   return res.data;
 };
 
 export const verifyStartOtp = async (id: string, otp: string): Promise<any> => {
-  const res = await axios.post(`${API}/bookings/${id}/verify-start-otp`, { otp }, getConfig());
+  const res = await axios.post(`${API}/bookings/${id}/verify-start-otp`, { otp }, getVendorRequestConfig());
   return res.data;
 };
 
 export const verifyEndOtp = async (id: string, otp: string): Promise<any> => {
-  const res = await axios.post(`${API}/bookings/${id}/verify-end-otp`, { otp }, getConfig());
+  const res = await axios.post(`${API}/bookings/${id}/verify-end-otp`, { otp }, getVendorRequestConfig());
   return res.data;
 };

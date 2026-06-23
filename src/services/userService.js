@@ -1,38 +1,25 @@
-import axios from "axios"
+import axios from "axios";
+import { getApiBaseUrl } from "./apiBase";
 
-const API= import.meta.env.VITE_API_URL + "/admin/users" 
+const API = `${getApiBaseUrl()}/admin/users`;
 
-export const getUsers=async(
+export const getUsers = async (page = 1, limit = 10) => {
+  const token = localStorage.getItem("token");
 
-page=1,
-limit=10
+  const response = await axios.get(
+    API,
 
-)=>{
+    {
+      params: {
+        page,
+        limit,
+      },
 
-const token=
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
 
-localStorage.getItem("token")
-
-const response=
-
-await axios.get(
-
-`${API}?page=${page}&limit=${limit}`,
-
-{
-
-headers:{
-
-Authorization:
-
-`Bearer ${token}`
-
-}
-
-}
-
-)
-
-return response.data
-
-}
+  return response.data;
+};

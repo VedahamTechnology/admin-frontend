@@ -44,7 +44,7 @@ fetchProviders()
 
 },[])
 
-const fetchProviders=async()=>{
+async function fetchProviders(){
 
 try{
 

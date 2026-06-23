@@ -28,7 +28,7 @@ fetchUsers()
 
 },[])
 
-const fetchUsers=async()=>{
+async function fetchUsers(){
 
 try{
 

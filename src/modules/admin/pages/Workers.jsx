@@ -10,9 +10,11 @@ function Workers() {
   const [searchQuery, setSearchQuery] = useState("")
   const [filterStatus, setFilterStatus] = useState("All Workers")
 
-  const fetchWorkers = async () => {
+  const fetchWorkers = async ({ showLoading = true } = {}) => {
     try {
-      setLoading(true)
+      if (showLoading) {
+        setLoading(true)
+      }
       const response = await getWorkers()
       console.log("Workers API Response:", response.data)
       
@@ -27,7 +29,7 @@ function Workers() {
       }
       
       setWorkers(fetchedWorkers)
-    } catch (err) {
+    } catch {
       setError("Failed to fetch workers")
     } finally {
       setLoading(false)
@@ -35,14 +37,18 @@ function Workers() {
   }
 
   useEffect(() => {
-    fetchWorkers()
+    const timer = setTimeout(() => {
+      fetchWorkers({ showLoading: false })
+    }, 0)
+
+    return () => clearTimeout(timer)
   }, [])
 
   const handleApprove = async (id) => {
     try {
       await approveWorker(id)
       fetchWorkers()
-    } catch (err) {
+    } catch {
       alert("Failed to approve worker")
     }
   }
@@ -53,7 +59,7 @@ function Workers() {
       try {
         await rejectWorker(id, reason)
         fetchWorkers()
-      } catch (err) {
+      } catch {
         alert("Failed to reject worker")
       }
     }

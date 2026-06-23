@@ -12,7 +12,6 @@ function CustomerRegister() {
   const navigate = useNavigate()
   const redirectTimerRef = useRef(null)
 
-  const role = "customer"
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [email, setEmail] = useState("")

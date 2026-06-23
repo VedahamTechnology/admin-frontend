@@ -37,7 +37,7 @@ function Categories() {
     fetchCategories();
   }, []);
 
-  const fetchCategories = async () => {
+  async function fetchCategories() {
     try {
       setLoading(true);
 
@@ -49,7 +49,7 @@ function Categories() {
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   const openAddModal = () => {
     setEditingCategory(null);

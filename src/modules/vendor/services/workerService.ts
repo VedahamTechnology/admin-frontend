@@ -5,16 +5,9 @@ import type {
   CreateWorkerResponse,
   WorkersResponse,
 } from "../types/vendor";
+import { getVendorRequestConfig, vendorApiBaseUrl } from "./vendorApi";
 
-const API = "http://localhost:5000/api/vendor";
-
-const getConfig = () => {
-  const token = localStorage.getItem("vendorToken");
-
-  return {
-    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-  };
-};
+const API = vendorApiBaseUrl;
 
 export const getWorkerErrorMessage = (error: unknown) => {
   if (axios.isAxiosError<{ message?: string }>(error)) {
@@ -32,7 +25,7 @@ export const getWorkerErrorMessage = (error: unknown) => {
 };
 
 export const getWorkers = async (): Promise<WorkersResponse> => {
-  const res = await axios.get<WorkersResponse>(`${API}/workers`, getConfig());
+  const res = await axios.get<WorkersResponse>(`${API}/workers`, getVendorRequestConfig());
   return res.data;
 };
 
@@ -42,7 +35,7 @@ export const createWorker = async (
   const res = await axios.post<CreateWorkerResponse>(
     `${API}/workers`,
     data,
-    getConfig()
+    getVendorRequestConfig()
   );
 
   return res.data;

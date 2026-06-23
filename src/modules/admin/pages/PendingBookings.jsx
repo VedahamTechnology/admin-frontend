@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 
 import AdminLayout from "../layouts/AdminLayout"
 import { EmptyState, LoadingGrid, PageShell, SectionCard, StatusPill } from "../components/AdminPageElements"
-import { Clock3 } from "lucide-react"
 
 const bookings=[
   { id:"PBK-3001", customer:"Anita Roy", worker:"Awaiting Assignment", status:"Pending", price:"₹899" },

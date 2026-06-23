@@ -23,7 +23,7 @@ function Dashboard() {
         setLoading(true)
         const response = await getDashboardStats()
         setStats(response.data?.data || response.data)
-      } catch (err) {
+      } catch {
         setError("Failed to load dashboard statistics")
       } finally {
         setLoading(false)

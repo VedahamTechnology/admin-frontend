@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 
 import AdminLayout from "../layouts/AdminLayout"
 import { EmptyState, LoadingGrid, PageShell, SectionCard, StatusPill } from "../components/AdminPageElements"
-import { CheckCircle2 } from "lucide-react"
 
 const bookings=[
   { id:"CBK-4001", customer:"Vivek Sharma", worker:"Spark Electricals", status:"Completed", price:"₹899" },

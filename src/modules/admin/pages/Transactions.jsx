@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 
 import AdminLayout from "../layouts/AdminLayout"
 import { EmptyState, LoadingGrid, PageShell, SectionCard, StatusPill } from "../components/AdminPageElements"
-import { CreditCard, IndianRupee, RefreshCw } from "lucide-react"
 
 const transactions=[
   { id:"TXN-7001", booking:"BK1001", customer:"Rahul Sharma", method:"Card", amount:"₹899", status:"Paid" },
