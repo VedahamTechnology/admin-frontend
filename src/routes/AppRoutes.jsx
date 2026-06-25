@@ -18,9 +18,6 @@ const ProviderAnalytics = lazy(() => import("../modules/admin/pages/ProviderAnal
 const Categories = lazy(() => import("../modules/admin/pages/Categories"));
 const ServiceList = lazy(() => import("../modules/admin/pages/ServiceList"));
 const Pricing = lazy(() => import("../modules/admin/pages/Pricing"));
-const PendingBookings = lazy(() => import("../modules/admin/pages/PendingBookings"));
-const CompletedBookings = lazy(() => import("../modules/admin/pages/CompletedBookings"));
-const CancelledBookings = lazy(() => import("../modules/admin/pages/CancelledBookings"));
 const Transactions = lazy(() => import("../modules/admin/pages/Transactions"));
 const Settlements = lazy(() => import("../modules/admin/pages/Settlements"));
 const Workers = lazy(() => import("../modules/admin/pages/Workers"));
@@ -59,9 +56,6 @@ const routes = [
   ["/workers", Workers],
   ["/workers/payments", WorkerPayments],
   ["/bookings", Bookings],
-  ["/bookings/pending", PendingBookings],
-  ["/bookings/completed", CompletedBookings],
-  ["/bookings/cancelled", CancelledBookings],
   ["/scrap", ScrapItems],
   ["/payments", Payments],
   ["/payments/transactions", Transactions],

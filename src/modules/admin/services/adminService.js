@@ -223,15 +223,20 @@ return API.get(
 }
 
 export const getPendingServices = () => {
-  return API.get("/admin/services/pending");
+  return API.get("/admin/services/approval/pending");
 };
 
 export const approveService = (serviceId) => {
-  return API.patch(`/admin/services/${serviceId}/approve`);
+  return API.put(`/admin/services/approval/${serviceId}/approve`);
 };
 
 export const rejectService = (serviceId, reason) => {
-  return API.patch(`/admin/services/${serviceId}/reject`, { rejectionReason: reason });
+  return API.put(
+    `/admin/services/approval/${serviceId}/reject`,
+    {
+      reason,
+    }
+  );
 };
 
 export const deleteService = (id) => {
@@ -241,3 +246,23 @@ export const deleteService = (id) => {
 export const getTopBookedServices = () => {
   return API.get("/admin/services/top-booked");
 };
+
+// BOOKINGS
+// Backend mounts bookingRoutes at /api/admin (not /api/admin/bookings)
+// So: router.get('/') maps to GET /api/admin/
+//     router.get('/:id') maps to GET /api/admin/:id
+//     router.patch('/:id/status') maps to PATCH /api/admin/:id/status
+// Note: getAllBookings (GET /) returns { data, stats, pagination } inline.
+
+export const getBookings = (params) => {
+  return API.get("/admin", { params });
+};
+
+export const getBookingById = (id) => {
+  return API.get(`/admin/${id}`);
+};
+
+export const updateBookingStatus = (id, status) => {
+  return API.patch(`/admin/${id}/status`, { status });
+};
+

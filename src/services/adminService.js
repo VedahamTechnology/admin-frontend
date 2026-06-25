@@ -129,7 +129,22 @@ return API.delete(
 
 }
 
+//bookings
+export const getBookings = (params = {}) => {
+  return API.get("/admin/bookings", { params })
+}
 
+export const getBookingStats = () => {
+  return API.get("/admin/bookings/stats")
+}
+
+export const getBookingById = (id) => {
+  return API.get(`/admin/bookings/${id}`)
+}
+
+export const updateBookingStatus = (id, status) => {
+  return API.patch(`/admin/bookings/${id}/status`, { status })
+}
 
 // SERVICES
 

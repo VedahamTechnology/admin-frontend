@@ -92,21 +92,6 @@ export default function Sidebar() {
       icon: <BadgeIndianRupee size={20} />,
     },
     {
-      label: "Active Bookings",
-      path: "/bookings",
-      icon: <CalendarCheck size={20} />,
-    },
-    {
-      label: "Pending Bookings",
-      path: "/bookings/pending",
-      icon: <CalendarCheck size={20} />,
-    },
-    {
-      label: "Completed Bookings",
-      path: "/bookings/completed",
-      icon: <CalendarCheck size={20} />,
-    },
-    {
       label: "Scrap Items",
       path: "/scrap",
       icon: <Package size={20} />,
