@@ -7,7 +7,9 @@ import {
   Settings,
   User,
   ClipboardList,
+  Wallet,
 } from "lucide-react";
+
 import { useLocation, useNavigate } from "react-router-dom";
 import AppSidebar from "../../../components/shared/AppSidebar";
 
@@ -61,6 +63,12 @@ export default function VendorSidebar() {
       path: "/vendor/schedule",
       icon: <Clock size={20} />,
     },
+    {
+      label: "Payments",
+      path: "/vendor/payments",
+      icon: <Wallet size={20} />, // or IndianRupee, CreditCard
+    },
+
     {
       label: "Settings",
       path: "/vendor/settings",

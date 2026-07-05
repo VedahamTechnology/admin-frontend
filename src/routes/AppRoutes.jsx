@@ -39,6 +39,7 @@ const VendorServices = lazy(() => import("../modules/vendor/pages/VendorServices
 const VendorRegister = lazy(() => import("../modules/vendor/pages/VendorRegister"));
 const UserDashboard = lazy(() => import("../modules/users/pages/UserDashboard"));
 const CustomerRegister = lazy(() => import("../modules/users/pages/CustomerRegister"));
+const VendorPayments = lazy(() => import("../modules/vendor/pages/VendorPayments"));
 
 const routes = [
   ["/", Login],
@@ -80,6 +81,7 @@ const routes = [
   ["/vendor/availability", VendorAvailability],
   ["/vendor/schedule", VendorSchedule],
   ["/vendor/settings", VendorSettings],
+  ["/vendor/payments", VendorPayments],
   ["/user/dashboard", UserDashboard],
 ];
 

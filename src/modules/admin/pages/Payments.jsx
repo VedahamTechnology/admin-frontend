@@ -1,159 +1,213 @@
+import { useMemo, useState } from "react"
+import {
+  IndianRupee,
+  CheckCircle2,
+  Clock3,
+  RotateCcw,
+  Search,
+  Eye,
+} from "lucide-react"
 import AdminLayout from "../layouts/AdminLayout"
-
-import { useEffect, useState } from "react"
-
-import { EmptyState, LoadingGrid, MetricCard, PageShell, SectionCard, StatusPill } from "../components/AdminPageElements"
-
-import { CircleDollarSign, Landmark, ReceiptText, Wallet } from "lucide-react"
-
-function Payments(){
-
-const payments=[
-{
-id:"PAY001",
-booking:"BK1001",
-customer:"Rahul Sharma",
-worker:"Spark Electricals",
-amount:"₹899",
-status:"Paid"
-},
-{
-id:"PAY002",
-booking:"BK1002",
-customer:"Priya Singh",
-worker:"Quick Plumbing",
-amount:"₹699",
-status:"Pending"
-},
-{
-id:"PAY003",
-booking:"BK1003",
-customer:"Aman Gupta",
-worker:"Home Assist",
-amount:"₹1,250",
-status:"Paid"
-}
-]
-
-const [loading,setLoading]=useState(true)
-
-useEffect(()=>{
-
-const timer=setTimeout(()=>setLoading(false),500)
-
-return()=>clearTimeout(timer)
-
-},[])
-
-return(
-
-<AdminLayout>
-
-<PageShell
-title="Payments"
-
-description="Keep transaction flow, settlement readiness, and payout health visible from a single overview surface."
-
->
-
-<div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-
-<MetricCard label="Collected" value="₹2.84L" change="Across paid transactions" icon={<CircleDollarSign size={20} />} accentClassName="bg-[#031B52]" />
-
-<MetricCard label="Settlements" value="₹94K" change="Queued for release" icon={<Landmark size={20} />} accentClassName="bg-emerald-500" />
-
-<MetricCard label="Pending" value="₹41K" change="Awaiting confirmation" icon={<Wallet size={20} />} accentClassName="bg-amber-500" />
-
-<MetricCard label="Receipts" value="328" change="Fully traceable records" icon={<ReceiptText size={20} />} accentClassName="bg-[#05AFC7]" />
-
-</div>
-
-<SectionCard title="Payment Ledger" description="Payment ID, Booking, Customer, Provider, Amount, and Status are ready for API integration.">
-
-{loading ? <LoadingGrid cards={4} /> : (
-
-<div className="overflow-x-auto">
-
-<table className="w-full min-w-[900px]">
-
-<thead>
-
-<tr className="border-b border-slate-200 text-left text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-
-<th className="pb-4">Payment ID</th>
-
-<th className="pb-4">Booking</th>
-
-<th className="pb-4">Customer</th>
-
-<th className="pb-4">Provider</th>
-
-<th className="pb-4">Amount</th>
-
-<th className="pb-4">Status</th>
-
-<th className="pb-4">Actions</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-{payments.map((payment)=>(
-
-<tr key={payment.id} className="border-b border-slate-100 last:border-0">
-
-<td className="py-5 font-medium text-slate-900">{payment.id}</td>
-
-<td className="py-5 text-slate-600">{payment.booking}</td>
-
-<td className="py-5 text-slate-600">{payment.customer}</td>
-
-<td className="py-5 text-slate-600">{payment.worker}</td>
-
-<td className="py-5 text-slate-600">{payment.amount}</td>
-
-<td className="py-5"><StatusPill status={payment.status} /></td>
-
-<td className="py-5">
-
-<div className="flex flex-wrap gap-2">
-
-<button type="button" className="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700">View</button>
-
-<button type="button" className="rounded-2xl border border-[#05AFC7]/20 bg-[#05AFC7]/10 px-4 py-2 text-sm font-semibold text-[#047e93]">Export</button>
-
-</div>
-
-</td>
-
-</tr>
-
-))}
-
-</tbody>
-
-</table>
-
-</div>
-
-)}
-
-</SectionCard>
-
-<SectionCard title="Integration Placeholder" description="The detailed transaction and settlement views continue in the submenu pages.">
-
-<EmptyState title="API Integration Pending" description="This overview remains available for dashboard summaries and payment health snapshots." />
-
-</SectionCard>
-
-</PageShell>
-
-</AdminLayout>
-
-)
-
+import { PageShell, SectionCard } from "../components/AdminPageElements"
+
+// ── Types ────────────────────────────────────────────────────
+const STATUS_OPTIONS = ["all", "success", "pending", "failed", "refunded"]
+const METHOD_OPTIONS = ["all", "UPI", "Card", "Wallet", "Cash"]
+
+// ── Status badge ─────────────────────────────────────────────
+const statusMeta = {
+  success:  { label: "Success",  className: "badge badge--success" },
+  pending:  { label: "Pending",  className: "badge badge--warning" },
+  failed:   { label: "Failed",   className: "badge badge--danger"  },
+  refunded: { label: "Refunded", className: "badge"                },
 }
 
-export default Payments
+function StatusBadge({ status }) {
+  const meta = statusMeta[status] || { label: status, className: "badge" }
+  return <span className={meta.className}>{meta.label}</span>
+}
+
+// ── Stat card ────────────────────────────────────────────────
+function StatCard({ label, value, icon: Icon, accent }) {
+  return (
+    <div className="metric-card">
+      <div>
+        <p className="metric-card__label">{label}</p>
+        <p className="metric-card__value">{value}</p>
+      </div>
+      <div className={`metric-card__icon ${accent}`}>
+        <Icon size={20} />
+      </div>
+    </div>
+  )
+}
+
+// ── Main page ────────────────────────────────────────────────
+const payments = []
+
+export default function Payments() {
+  const [search, setSearch]         = useState("")
+  const [statusFilter, setStatus]   = useState("all")
+  const [methodFilter, setMethod]   = useState("all")
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase()
+    return payments.filter((p) => {
+      const matchSearch =
+        !q ||
+        p.transactionId?.toLowerCase().includes(q) ||
+        p.bookingId?.toLowerCase().includes(q) ||
+        p.customer?.toLowerCase().includes(q) ||
+        p.vendor?.toLowerCase().includes(q)
+      const matchStatus = statusFilter === "all" || p.status === statusFilter
+      const matchMethod = methodFilter === "all" || p.method === methodFilter
+      return matchSearch && matchStatus && matchMethod
+    })
+  }, [search, statusFilter, methodFilter])
+
+  return (
+    <AdminLayout>
+      <PageShell
+        eyebrow="Payment Management"
+        title="Payments"
+        description="Manage customer payments, revenue and transaction history."
+      >
+        {/* ── Stat cards ────────────────────────────────────── */}
+        <div className="metric-grid metric-grid--4">
+          <StatCard
+            label="Total Revenue"
+            value="₹0"
+            icon={IndianRupee}
+            accent="accent-cyan"
+          />
+          <StatCard
+            label="Successful Payments"
+            value="0"
+            icon={CheckCircle2}
+            accent="accent-success"
+          />
+          <StatCard
+            label="Pending Payments"
+            value="0"
+            icon={Clock3}
+            accent="accent-warning"
+          />
+          <StatCard
+            label="Refunded"
+            value="₹0"
+            icon={RotateCcw}
+            accent="accent-danger"
+          />
+        </div>
+
+        {/* ── Table card ────────────────────────────────────── */}
+        <SectionCard
+          title="Transaction History"
+          description="All payment transactions recorded on the platform."
+        >
+          {/* Toolbar */}
+          <div className="table-toolbar">
+            <div className="search-wrapper">
+              <Search size={18} className="search-wrapper__icon" />
+              <input
+                className="admin-input"
+                placeholder="Search transaction..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+
+            <div style={{ display: "flex", gap: 10 }}>
+              <select
+                className="admin-select"
+                value={statusFilter}
+                onChange={(e) => setStatus(e.target.value)}
+              >
+                {STATUS_OPTIONS.map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt === "all" ? "All Status" : opt.charAt(0).toUpperCase() + opt.slice(1)}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                className="admin-select"
+                value={methodFilter}
+                onChange={(e) => setMethod(e.target.value)}
+              >
+                {METHOD_OPTIONS.map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt === "all" ? "All Methods" : opt}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Table */}
+          {filtered.length === 0 ? (
+            <div
+              style={{
+                padding: "48px 0",
+                textAlign: "center",
+                color: "var(--color-text-secondary)",
+                fontSize: "0.9375rem",
+              }}
+            >
+              No payment records found.
+            </div>
+          ) : (
+            <div className="admin-table-wrapper">
+              <table className="admin-table admin-table--min-wide">
+                <thead>
+                  <tr>
+                    <th>Transaction ID</th>
+                    <th>Booking ID</th>
+                    <th>Customer</th>
+                    <th>Vendor</th>
+                    <th>Amount</th>
+                    <th>Method</th>
+                    <th>Status</th>
+                    <th>Paid On</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map((payment) => (
+                    <tr key={payment.transactionId}>
+                      <td>
+                        <p className="admin-table__cell-primary">{payment.transactionId}</p>
+                      </td>
+                      <td>
+                        <p className="admin-table__cell-sub">{payment.bookingId}</p>
+                      </td>
+                      <td>{payment.customer}</td>
+                      <td>{payment.vendor}</td>
+                      <td>
+                        <span style={{ fontWeight: 600 }}>₹{payment.amount?.toLocaleString("en-IN")}</span>
+                      </td>
+                      <td>{payment.method}</td>
+                      <td>
+                        <StatusBadge status={payment.status} />
+                      </td>
+                      <td>
+                        {payment.paidOn
+                          ? new Date(payment.paidOn).toLocaleDateString("en-IN")
+                          : "—"}
+                      </td>
+                      <td>
+                        <button className="btn btn--outline service-action-btn">
+                          <Eye size={14} /> View
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </SectionCard>
+      </PageShell>
+    </AdminLayout>
+  )
+}
